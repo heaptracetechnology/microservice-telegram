@@ -1,0 +1,47 @@
+omg: 1
+lifecycle:
+  startup:
+    command: ["microservice-telegram"]
+info:
+  version: 1.0.0
+  title: Telegram
+  description: This is a telegram service
+  contact:
+    name: Rohit Shetty
+    url: https://github.com/ht68rohit
+    email: rohits@heaptrace.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT 
+actions:
+  get_bot:
+    help: Get object with bot details
+    http:
+      port: 3000
+      method: get
+      path: /getbot
+      contentType: application/json
+    output:
+      type: object
+      contentType: application/json
+      properties:
+        id:
+          help: The bot ID
+          type: int
+        first_name:
+          help: The first name
+          type: string
+        last_name:
+          help: The last name
+          type: string
+        username:
+          help: The bot username
+          type: string
+        is_bot:
+          help: The boolean value as true/false
+          type: boolean
+environment:
+  ACCESS_TOKEN:
+    type: string
+    required: true
+    help: Access token key for app  
