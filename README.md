@@ -22,7 +22,7 @@ omg build
 
 ### CLI
 
-##### Send Message
+##### Get Bot Details
 ```sh
 $ omg run get_bot -e ACCESS_TOKEN=<ACCESS_TOKEN>
 ```
