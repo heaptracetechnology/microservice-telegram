@@ -131,7 +131,7 @@ var _ = Describe("Test send bot message with invalid message", func() {
 })
 
 //Test bot send message
-var _ = Describe("Test send bot message with valid data", func() {
+var _ = Describe("Test send bot message with Invalid token", func() {
 	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMAA"
 	os.Setenv("ACCESS_TOKEN", accessToken)
 	botMessage := BotMessage{ChatID: -349280204, Message: "Test bot send message"}
