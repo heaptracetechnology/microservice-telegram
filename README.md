@@ -26,6 +26,10 @@ omg build
 ```sh
 $ omg run get_bot -e ACCESS_TOKEN=<ACCESS_TOKEN>
 ```
+##### Send Bot Message
+```sh
+$ omg run send -a chat_id=<CHAT_ID> -a message=<MESSAGE> -e ACCESS_TOKEN=<ACCESS_TOKEN>
+```
 
 
 ## License

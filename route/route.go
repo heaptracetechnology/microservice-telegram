@@ -23,6 +23,12 @@ var routes = Routes{
         "/getbot",
         messaging.GetBotDetails,
     },
+    Route{
+        "Send",
+        "POST",
+        "/send",
+        messaging.Send,
+    },
 }
 
 func NewRouter() *mux.Router {

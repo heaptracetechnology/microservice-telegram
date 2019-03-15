@@ -40,6 +40,43 @@ actions:
         is_bot:
           help: The boolean value as true/false
           type: boolean
+  send:
+    help: Send message from bot
+    http:
+      port: 3000
+      method: post
+      path: /send
+      contentType: application/json
+    arguments:
+      chat_id:
+        type: int
+        in: requestBody
+        required: true
+        help: The chat id of group
+      message:
+        type: string
+        in: requestBody
+        required: true
+        help: The text message to be send
+    output:
+      type: object
+      contentType: application/json
+      properties:
+        from:
+          help: The object with bot details
+          type: object
+        chat:
+          help: The first name
+          type: string
+        last_name:
+          help: The last name
+          type: string
+        username:
+          help: The bot username
+          type: string
+        is_bot:
+          help: The boolean value as true/false
+          type: boolean
 environment:
   ACCESS_TOKEN:
     type: string
