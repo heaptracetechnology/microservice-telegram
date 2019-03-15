@@ -2,11 +2,11 @@ package messaging
 
 import (
 	"encoding/json"
-	"fmt"
-	result "github.com/heaptracetechnology/microservice-telegram/result"
-	"gopkg.in/telegram-bot-api.v4"
 	"net/http"
 	"os"
+
+	result "github.com/heaptracetechnology/microservice-telegram/result"
+	tgbotapi "gopkg.in/telegram-bot-api.v4"
 )
 
 type BotMessage struct {
@@ -19,9 +19,9 @@ func GetBotDetails(responseWriter http.ResponseWriter, request *http.Request) {
 
 	var accessToken = os.Getenv("ACCESS_TOKEN")
 
-	bot, erro := tgbotapi.NewBotAPI(accessToken)
-	if erro != nil {
-		result.WriteErrorResponse(responseWriter, erro)
+	bot, err := tgbotapi.NewBotAPI(accessToken)
+	if err != nil {
+		result.WriteErrorResponse(responseWriter, err)
 		return
 	}
 
@@ -42,7 +42,8 @@ func Send(responseWriter http.ResponseWriter, request *http.Request) {
 
 	bot, err := tgbotapi.NewBotAPI(accessToken)
 	if err != nil {
-		fmt.Println("err new bot api : ", err)
+		result.WriteErrorResponse(responseWriter, err)
+		return
 	}
 
 	decoder := json.NewDecoder(request.Body)
@@ -56,9 +57,9 @@ func Send(responseWriter http.ResponseWriter, request *http.Request) {
 	sendMessage := tgbotapi.NewMessage(param.ChatID, param.Message)
 	res, err := bot.Send(sendMessage)
 	if err != nil {
-		fmt.Println("err new message :", err)
+		result.WriteErrorResponse(responseWriter, err)
+		return
 	}
-
 	bytes, _ := json.Marshal(res)
 	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
 }
