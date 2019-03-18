@@ -24,10 +24,28 @@ var routes = Routes{
         messaging.GetBotDetails,
     },
     Route{
-        "Send",
+        "SendGroupMessage",
         "POST",
-        "/send",
-        messaging.Send,
+        "/sendgroupmessage",
+        messaging.SendGroupMessage,
+    },
+    Route{
+        "SendChannelMessage",
+        "POST",
+        "/sendchannelmessage",
+        messaging.SendChannelMessage,
+    },
+    Route{
+        "GetChat",
+        "POST",
+        "/getchat",
+        messaging.GetChat,
+    },
+    Route{
+        "LeaveChat",
+        "POST",
+        "/leavechat",
+        messaging.LeaveChat,
     },
 }
 

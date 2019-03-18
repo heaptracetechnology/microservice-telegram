@@ -40,12 +40,12 @@ actions:
         is_bot:
           help: The boolean value as true/false
           type: boolean
-  send:
+  group_message:
     help: Send message from bot
     http:
       port: 3000
       method: post
-      path: /send
+      path: /sendgroupmessage
       contentType: application/json
     arguments:
       chat_id:
@@ -77,6 +77,95 @@ actions:
         is_bot:
           help: The boolean value as true/false
           type: boolean
+  channel_message:
+    help: Get object with bot details
+    http:
+      port: 3000
+      method: post
+      path: /sendchannelmessage
+      contentType: application/json
+    arguments:
+      username:
+        type: string
+        in: requestBody
+        required: true
+        help: The username of channel
+      message:
+        type: string
+        in: requestBody
+        required: true
+        help: The text message to be send
+    output:
+      type: object
+      contentType: application/json
+      properties:
+        message_id:
+          help: The message ID
+          type: int
+        chat:
+          help: The chat object with details(ID, type, title,username)
+          type: object
+        text:
+          help: The text message
+          type: string
+  get_chat:
+    help: Get object with chat details
+    http:
+      port: 3000
+      method: post
+      path: /getchat
+      contentType: application/json
+    arguments:
+      chat_id:
+        type: int
+        in: requestBody
+        required: true
+        help: The chat Id of telegram conversation
+    output:
+      type: object
+      contentType: application/json
+      properties:
+        id:
+          help: The bot ID
+          type: int
+        first_name:
+          help: The first name
+          type: string
+        last_name:
+          help: The last name
+          type: string
+        username:
+          help: The bot username
+          type: string
+        is_bot:
+          help: The boolean value as true/false
+          type: boolean
+  leave_chat:
+    help: Leave group using chat ID
+    http:
+      port: 3000
+      method: post
+      path: /leavechat
+      contentType: application/json
+    arguments:
+      chat_id:
+        type: int
+        in: requestBody
+        required: true
+        help: The chat ID from where to leave bot
+    output:
+      type: object
+      contentType: application/json
+      properties:
+        ok:
+          help: It return boolean value true/false
+          type: boolean
+        result:
+          help: The result will return boolean value true/false
+          type: boolean
+        error_code:
+          help: The error code
+          type: int
 environment:
   ACCESS_TOKEN:
     type: string
