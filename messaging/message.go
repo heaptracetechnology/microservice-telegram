@@ -1,17 +1,26 @@
 package messaging
 
 import (
+	//"bufio"
+	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	result "github.com/heaptracetechnology/microservice-telegram/result"
 	tgbotapi "gopkg.in/telegram-bot-api.v4"
+	"io/ioutil"
 	"net/http"
 	"os"
+	"time"
+	//"path/filepath"
+	//"bytes"
+	//"io"
 )
 
 type BotMessage struct {
-	ChatID   int64  `json:"chat_id"`
-	Message  string `json:"message"`
-	Username string `json:"username"`
+	ChatID      int64  `json:"chat_id"`
+	Message     string `json:"message"`
+	Username    string `json:"username"`
+	ImageBase64 string `json:"image"`
 }
 
 //Get Bot Details
@@ -36,7 +45,7 @@ func GetBotDetails(responseWriter http.ResponseWriter, request *http.Request) {
 }
 
 //Send Group Message By Bot
-func SendGroupMessage(responseWriter http.ResponseWriter, request *http.Request) {
+func SendMessage(responseWriter http.ResponseWriter, request *http.Request) {
 
 	var accessToken = os.Getenv("ACCESS_TOKEN")
 
@@ -156,5 +165,61 @@ func LeaveChat(responseWriter http.ResponseWriter, request *http.Request) {
 	}
 
 	bytes, _ := json.Marshal(leaveChat)
+	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
+}
+
+//Send Photo
+func SendPhoto(responseWriter http.ResponseWriter, request *http.Request) {
+
+	fmt.Println("===============")
+	var accessToken = os.Getenv("ACCESS_TOKEN")
+
+	bot, err := tgbotapi.NewBotAPI(accessToken)
+	if err != nil {
+		result.WriteErrorResponse(responseWriter, err)
+		return
+	}
+
+	body, err := ioutil.ReadAll(request.Body)
+	if err != nil {
+		fmt.Println("======errr=======")
+	}
+
+	defer request.Body.Close()
+
+	var botMessage BotMessage
+	er := json.Unmarshal(body, &botMessage)
+	if er != nil {
+		fmt.Println("======errr1=======")
+	}
+	fmt.Println("image.ImageBase64 ::: ", botMessage.ImageBase64)
+	data, err := base64.StdEncoding.DecodeString(botMessage.ImageBase64)
+	if err != nil {
+		fmt.Println("error:", err)
+		return
+	}
+	filepath := os.TempDir() + "/" + time.Now().String() + ".jpeg"
+	f, err1 := os.Create(filepath)
+	if err1 != nil {
+		fmt.Println("errr file create  :::: ", err1)
+		panic(err)
+
+	}
+	defer f.Close()
+
+	if _, err := f.Write(data); err != nil {
+		panic(err)
+	}
+	if err := f.Sync(); err != nil {
+		panic(err)
+	}
+
+	leaveChat := tgbotapi.NewPhotoUpload(botMessage.ChatID, filepath)
+	reponse, errr := bot.Send(leaveChat)
+	if errr != nil {
+		result.WriteErrorResponse(responseWriter, errr)
+		return
+	}
+	bytes, _ := json.Marshal(reponse)
 	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
 }

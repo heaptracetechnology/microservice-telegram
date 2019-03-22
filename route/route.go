@@ -24,10 +24,10 @@ var routes = Routes{
         messaging.GetBotDetails,
     },
     Route{
-        "SendGroupMessage",
+        "SendMessage",
         "POST",
-        "/sendgroupmessage",
-        messaging.SendGroupMessage,
+        "/send",
+        messaging.SendMessage,
     },
     Route{
         "SendChannelMessage",
@@ -46,6 +46,12 @@ var routes = Routes{
         "POST",
         "/leavechat",
         messaging.LeaveChat,
+    },
+    Route{
+        "SendPhoto",
+        "POST",
+        "/sendphoto",
+        messaging.SendPhoto,
     },
 }
 

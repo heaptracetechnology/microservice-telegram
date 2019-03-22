@@ -26,14 +26,11 @@ omg build
 ```sh
 $ omg run get_bot -e ACCESS_TOKEN=<ACCESS_TOKEN>
 ```
-##### Send Bot Group Message
+##### Send Message TO Group/User
 ```sh
 $ omg run send -a chat_id=<CHAT_ID> -a message=<MESSAGE> -e ACCESS_TOKEN=<ACCESS_TOKEN>
 ```
-##### Send Bot Group Message (EXAMPLE)
-```sh
-$ omg run group_message -a chat_id="-349200002" -a message="Hello World" -e ACCESS_TOKEN=<ACCESS_TOKEN>
-```
+NOTE : Use "-" as prefix in ChatID for group(chat_id = "12345678") else for user (chat_id = "12345678")
 
 ##### Send Bot Channel Message
 ```sh
@@ -51,6 +48,11 @@ $ omg run get_chat -a chat_id=<CHAT_ID> -e ACCESS_TOKEN=<ACCESS_TOKEN>
 ```sh
 $ omg run leave_chat -a chat_id=<CHAT_ID> -e ACCESS_TOKEN=<ACCESS_TOKEN>
 ```
+##### Send Photo
+```sh
+$ omg run send_photo -a chat_id=<CHAT_ID> -a image=<BASE64_DATA> -e ACCESS_TOKEN=<ACCESS_TOKEN>
+```
+NOTE : Use "-" as prefix in ChatID for group(chat_id = "12345678") else for user (chat_id = "12345678")
 ## License
 ### [MIT](https://choosealicense.com/licenses/mit/)
 

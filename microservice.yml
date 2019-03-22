@@ -40,12 +40,12 @@ actions:
         is_bot:
           help: The boolean value as true/false
           type: boolean
-  group_message:
-    help: Send message from bot
+  send:
+    help: Send message from bot to group or user
     http:
       port: 3000
       method: post
-      path: /sendgroupmessage
+      path: /send
       contentType: application/json
     arguments:
       chat_id:
@@ -166,6 +166,40 @@ actions:
         error_code:
           help: The error code
           type: int
+  send_photo:
+    help: Send photo to group by bot
+    http:
+      port: 3000
+      method: post
+      path: /sendphoto
+      contentType: application/json
+    arguments:
+      chat_id:
+        type: int
+        in: requestBody
+        required: false
+        help: The chat ID where image is to be send
+      image:
+        type: string
+        in: requestBody
+        required: false
+        help: The image base64 data.
+    output:
+      type: object
+      contentType: application/json
+      properties:
+        message_id:
+          help: It return integer message Id. 
+          type: int
+        from:
+          help: The object of User.
+          type: object
+        chat:
+          help: The chat details
+          type: object
+        photo:
+          help: The object of Photo along with file Id.
+          type: object
 environment:
   ACCESS_TOKEN:
     type: string
