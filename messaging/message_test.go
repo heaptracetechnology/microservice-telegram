@@ -2,15 +2,28 @@ package messaging
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
+
+//Base64 encoder
+func Encodebase64(path string) (string, error) {
+	buff, err := ioutil.ReadFile(path)
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(buff), nil
+}
 
 //Test get bot details with the valid data
 var _ = Describe("Test get bot details with the valid data", func() {
@@ -67,14 +80,22 @@ var _ = Describe("Test send bot message with valid data", func() {
 		log.Fatal(err)
 	}
 	recorder := httptest.NewRecorder()
-	handler := http.HandlerFunc(Send)
+	handler := http.HandlerFunc(SendMessage)
 	handler.ServeHTTP(recorder, req)
 
 	Describe("Send bot message", func() {
 		Context("send bot message", func() {
-			It("Should result http.StatusOK", func() {
-				Expect(http.StatusOK).To(Equal(recorder.Code))
-			})
+			if recorder.Code == http.StatusOK {
+				It("Should result http.StatusOK", func() {
+					Expect(http.StatusOK).To(Equal(recorder.Code))
+				})
+			} else {
+				It("Should result http.StatusBadRequest", func() {
+					Expect(http.StatusBadRequest).To(Equal(recorder.Code))
+					fmt.Println("Bot has been removed from group")
+				})
+			}
+
 		})
 	})
 
@@ -84,7 +105,7 @@ var _ = Describe("Test send bot message with valid data", func() {
 var _ = Describe("Test send bot message with invalid chatid", func() {
 	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
 	os.Setenv("ACCESS_TOKEN", accessToken)
-	botMessage := BotMessage{ChatID: -1234, Message: "Test bot send message"}
+	botMessage := BotMessage{ChatID: -1234, Message: "Test bot send message invalid chatid"}
 	requestBody := new(bytes.Buffer)
 	json.NewEncoder(requestBody).Encode(botMessage)
 	req, err := http.NewRequest("POST", "/send", requestBody)
@@ -92,7 +113,7 @@ var _ = Describe("Test send bot message with invalid chatid", func() {
 		log.Fatal(err)
 	}
 	recorder := httptest.NewRecorder()
-	handler := http.HandlerFunc(Send)
+	handler := http.HandlerFunc(SendMessage)
 	handler.ServeHTTP(recorder, req)
 
 	Describe("Send bot message", func() {
@@ -105,8 +126,8 @@ var _ = Describe("Test send bot message with invalid chatid", func() {
 
 })
 
-//Test bot send message invalid message
-var _ = Describe("Test send bot message with invalid message", func() {
+//Test bot send message empty message
+var _ = Describe("Test send bot message with empty message", func() {
 	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
 	os.Setenv("ACCESS_TOKEN", accessToken)
 	botMessage := BotMessage{ChatID: -349280204, Message: ""}
@@ -117,7 +138,7 @@ var _ = Describe("Test send bot message with invalid message", func() {
 		log.Fatal(err)
 	}
 	recorder := httptest.NewRecorder()
-	handler := http.HandlerFunc(Send)
+	handler := http.HandlerFunc(SendMessage)
 	handler.ServeHTTP(recorder, req)
 
 	Describe("Send bot message", func() {
@@ -131,8 +152,33 @@ var _ = Describe("Test send bot message with invalid message", func() {
 })
 
 //Test bot send message
-var _ = Describe("Test send bot message with Invalid token", func() {
+var _ = Describe("Test send bot message with Invalid Botmessage field", func() {
 	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMAA"
+	os.Setenv("ACCESS_TOKEN", accessToken)
+	botMessage := BotMessage{Username: "-349280204", Message: "Test send bot message with Invalid token"}
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(botMessage)
+	req, err := http.NewRequest("POST", "/send", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(SendMessage)
+	handler.ServeHTTP(recorder, req)
+
+	Describe("Send bot message", func() {
+		Context("send bot message", func() {
+			It("Should result http.StatusBadRequest", func() {
+				Expect(http.StatusBadRequest).To(Equal(recorder.Code))
+			})
+		})
+	})
+
+})
+
+//Test bot send message
+var _ = Describe("Test send bot message with Invalid Token", func() {
+	accessToken := "754194684:A"
 	os.Setenv("ACCESS_TOKEN", accessToken)
 	botMessage := BotMessage{ChatID: -349280204, Message: "Test bot send message"}
 	requestBody := new(bytes.Buffer)
@@ -142,11 +188,347 @@ var _ = Describe("Test send bot message with Invalid token", func() {
 		log.Fatal(err)
 	}
 	recorder := httptest.NewRecorder()
-	handler := http.HandlerFunc(Send)
+	handler := http.HandlerFunc(SendMessage)
 	handler.ServeHTTP(recorder, req)
 
 	Describe("Send bot message", func() {
 		Context("send bot message", func() {
+			It("Should result http.StatusOK", func() {
+				Expect(http.StatusBadRequest).To(Equal(recorder.Code))
+			})
+		})
+	})
+
+})
+
+//Test bot send message to channel
+var _ = Describe("Test send bot channel message with valid data", func() {
+	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("ACCESS_TOKEN", accessToken)
+	botMessage := BotMessage{Username: "@firstchannellink", Message: "Test send bot channel message"}
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(botMessage)
+	req, err := http.NewRequest("POST", "/sendchannelmessage", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(SendChannelMessage)
+	handler.ServeHTTP(recorder, req)
+
+	Describe("Send bot channel message", func() {
+		Context("send bot channel message", func() {
+			It("Should result http.StatusOK", func() {
+				Expect(http.StatusOK).To(Equal(recorder.Code))
+			})
+		})
+	})
+
+})
+
+//Test bot send channel message
+var _ = Describe("Test send bot channel message with Invalid data", func() {
+	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("ACCESS_TOKEN", accessToken)
+	botMessage := BotMessage{ImageBase64: "@firstchannellink", Message: "Test send bot channel message"}
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(botMessage)
+	req, err := http.NewRequest("POST", "/sendchannelmessage", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(SendChannelMessage)
+	handler.ServeHTTP(recorder, req)
+
+	Describe("Send bot channel message", func() {
+		Context("send bot channel message", func() {
+			It("Should result http.StatusBadRequest", func() {
+				Expect(http.StatusBadRequest).To(Equal(recorder.Code))
+			})
+		})
+	})
+
+})
+
+//Test bot send message to channel
+var _ = Describe("Test send bot channel message with Invalid token", func() {
+	accessToken := "754194684:A"
+	os.Setenv("ACCESS_TOKEN", accessToken)
+	botMessage := BotMessage{Username: "@firstchannellink", Message: "Test send bot channel message"}
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(botMessage)
+	req, err := http.NewRequest("POST", "/sendchannelmessage", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(SendChannelMessage)
+	handler.ServeHTTP(recorder, req)
+
+	Describe("Send bot channel message", func() {
+		Context("send bot channel message", func() {
+			It("Should result http.StatusBadRequest", func() {
+				Expect(http.StatusBadRequest).To(Equal(recorder.Code))
+			})
+		})
+	})
+
+})
+
+//Test GetChat
+var _ = Describe("Test GetChat with valid data", func() {
+	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("ACCESS_TOKEN", accessToken)
+	botMessage := BotMessage{ChatID: -349280204}
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(botMessage)
+	req, err := http.NewRequest("POST", "/getchat", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(GetChat)
+	handler.ServeHTTP(recorder, req)
+
+	Describe("Get chat", func() {
+		Context("Get chat", func() {
+			It("Should result http.StatusOK", func() {
+				Expect(http.StatusOK).To(Equal(recorder.Code))
+			})
+		})
+	})
+
+})
+
+//Test GetChat
+var _ = Describe("Test GetChat with Invalid data", func() {
+	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("ACCESS_TOKEN", accessToken)
+	botMessage := BotMessage{Username: "-349280204"}
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(botMessage)
+	req, err := http.NewRequest("POST", "/getchat", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(GetChat)
+	handler.ServeHTTP(recorder, req)
+
+	Describe("Get chat", func() {
+		Context("Get chat", func() {
+			It("Should result http.StatusBadRequest", func() {
+				Expect(http.StatusBadRequest).To(Equal(recorder.Code))
+			})
+		})
+	})
+
+})
+
+//Test GetChat
+var _ = Describe("Test GetChat with Invalid token", func() {
+	accessToken := "754194684:AA"
+	os.Setenv("ACCESS_TOKEN", accessToken)
+	botMessage := BotMessage{Username: "-349280204"}
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(botMessage)
+	req, err := http.NewRequest("POST", "/getchat", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(GetChat)
+	handler.ServeHTTP(recorder, req)
+
+	Describe("Get chat", func() {
+		Context("Get chat", func() {
+			It("Should result http.StatusBadRequest", func() {
+				Expect(http.StatusBadRequest).To(Equal(recorder.Code))
+			})
+		})
+	})
+
+})
+
+//Test Send Photo
+var _ = Describe("Test send photo with valid data", func() {
+	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("ACCESS_TOKEN", accessToken)
+
+	filepath, _ := filepath.Abs("../testImage/dice.jpeg")
+	base64Data, base64Err := Encodebase64(filepath)
+	if base64Err != nil {
+		fmt.Println("===base64 err======", base64Err)
+	}
+
+	botMessage := BotMessage{ChatID: -349280204, ImageBase64: base64Data}
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(botMessage)
+	req, err := http.NewRequest("POST", "/sendphoto", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(SendPhoto)
+	handler.ServeHTTP(recorder, req)
+
+	Describe("Test Send Photo", func() {
+		Context("Send Photo", func() {
+			if recorder.Code == http.StatusOK {
+				It("Should result http.StatusOK", func() {
+					Expect(http.StatusOK).To(Equal(recorder.Code))
+				})
+			} else {
+				It("Should result http.StatusBadRequest", func() {
+					Expect(http.StatusBadRequest).To(Equal(recorder.Code))
+					fmt.Println("Bot is already leaved group")
+				})
+			}
+		})
+	})
+
+})
+
+//Test Send Photo
+var _ = Describe("Test send photo with Invalid data", func() {
+	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("ACCESS_TOKEN", accessToken)
+
+	filepath, _ := filepath.Abs("../testImage/dice.jpeg")
+	base64Data, base64Err := Encodebase64(filepath)
+	if base64Err != nil {
+		fmt.Println("===base64 err======", base64Err)
+	}
+
+	botMessage := BotMessage{ChatID: -349280204, Username: base64Data}
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(botMessage)
+	req, err := http.NewRequest("POST", "/sendphoto", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(SendPhoto)
+	handler.ServeHTTP(recorder, req)
+
+	Describe("Test Send Photo", func() {
+		Context("Send Photo", func() {
+			It("Should result http.StatusBadRequest", func() {
+				Expect(http.StatusBadRequest).To(Equal(recorder.Code))
+			})
+		})
+	})
+
+})
+
+//Test Send Photo
+var _ = Describe("Test send photo with Invalid token", func() {
+	accessToken := "754194684:AA"
+	os.Setenv("ACCESS_TOKEN", accessToken)
+
+	filepath, _ := filepath.Abs("../testImage/dice.jpeg")
+	base64Data, base64Err := Encodebase64(filepath)
+	if base64Err != nil {
+		fmt.Println("===base64 err======", base64Err)
+	}
+
+	botMessage := BotMessage{ChatID: -349280204, ImageBase64: base64Data}
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(botMessage)
+	req, err := http.NewRequest("POST", "/sendphoto", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(SendPhoto)
+	handler.ServeHTTP(recorder, req)
+
+	Describe("Test Send Photo", func() {
+		Context("Send Photo", func() {
+			It("Should result http.StatusOK", func() {
+				Expect(http.StatusBadRequest).To(Equal(recorder.Code))
+			})
+		})
+	})
+
+})
+
+//Test Leave Chat
+var _ = Describe("Test Leave Chat with valid data", func() {
+	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("ACCESS_TOKEN", accessToken)
+	botMessage := BotMessage{ChatID: -34928020}
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(botMessage)
+	req, err := http.NewRequest("POST", "/leavechat", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(LeaveChat)
+	handler.ServeHTTP(recorder, req)
+
+	Describe("LeaveChat", func() {
+		Context("Leave Chat", func() {
+			if recorder.Code == http.StatusOK {
+				It("Should result http.StatusOK", func() {
+					Expect(http.StatusOK).To(Equal(recorder.Code))
+				})
+			} else {
+				It("Should result http.StatusBadRequest", func() {
+					Expect(http.StatusBadRequest).To(Equal(recorder.Code))
+					fmt.Println("Bot is already leaved group")
+				})
+			}
+
+		})
+	})
+
+})
+
+//Test Leave Chat
+var _ = Describe("Test Leave Chat with Invalid data", func() {
+	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tM"
+	os.Setenv("ACCESS_TOKEN", accessToken)
+	botMessage := BotMessage{Message: "-349280204"}
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(botMessage)
+	req, err := http.NewRequest("POST", "/leavechat", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(LeaveChat)
+	handler.ServeHTTP(recorder, req)
+
+	Describe("LeaveChat", func() {
+		Context("Leave Chat", func() {
+			It("Should result http.StatusBadRequest", func() {
+				Expect(http.StatusBadRequest).To(Equal(recorder.Code))
+			})
+		})
+	})
+
+})
+
+//Test Leave Chat
+var _ = Describe("Test Leave Chat with Invalid token", func() {
+	accessToken := "754194684:A"
+	os.Setenv("ACCESS_TOKEN", accessToken)
+	botMessage := BotMessage{Message: "-349280204"}
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(botMessage)
+	req, err := http.NewRequest("POST", "/leavechat", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(LeaveChat)
+	handler.ServeHTTP(recorder, req)
+
+	Describe("LeaveChat", func() {
+		Context("Leave Chat", func() {
 			It("Should result http.StatusBadRequest", func() {
 				Expect(http.StatusBadRequest).To(Equal(recorder.Code))
 			})

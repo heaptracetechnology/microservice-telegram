@@ -5,12 +5,13 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	result "github.com/heaptracetechnology/microservice-telegram/result"
-	tgbotapi "gopkg.in/telegram-bot-api.v4"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
+
+	result "github.com/heaptracetechnology/microservice-telegram/result"
+	tgbotapi "gopkg.in/telegram-bot-api.v4"
 	//"path/filepath"
 	//"bytes"
 	//"io"
@@ -104,7 +105,7 @@ func SendChannelMessage(responseWriter http.ResponseWriter, request *http.Reques
 	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
 }
 
-// //Get Chat
+//Get Chat
 func GetChat(responseWriter http.ResponseWriter, request *http.Request) {
 
 	var accessToken = os.Getenv("ACCESS_TOKEN")
@@ -214,8 +215,8 @@ func SendPhoto(responseWriter http.ResponseWriter, request *http.Request) {
 		panic(err)
 	}
 
-	leaveChat := tgbotapi.NewPhotoUpload(botMessage.ChatID, filepath)
-	reponse, errr := bot.Send(leaveChat)
+	uploadphoto := tgbotapi.NewPhotoUpload(botMessage.ChatID, filepath)
+	reponse, errr := bot.Send(uploadphoto)
 	if errr != nil {
 		result.WriteErrorResponse(responseWriter, errr)
 		return
