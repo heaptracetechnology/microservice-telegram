@@ -1,10 +1,8 @@
 package messaging
 
 import (
-	//"bufio"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -12,9 +10,6 @@ import (
 
 	result "github.com/heaptracetechnology/microservice-telegram/result"
 	tgbotapi "gopkg.in/telegram-bot-api.v4"
-	//"path/filepath"
-	//"bytes"
-	//"io"
 )
 
 type BotMessage struct {
@@ -172,7 +167,6 @@ func LeaveChat(responseWriter http.ResponseWriter, request *http.Request) {
 //Send Photo
 func SendPhoto(responseWriter http.ResponseWriter, request *http.Request) {
 
-	fmt.Println("===============")
 	var accessToken = os.Getenv("ACCESS_TOKEN")
 
 	bot, err := tgbotapi.NewBotAPI(accessToken)
@@ -181,31 +175,34 @@ func SendPhoto(responseWriter http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	body, err := ioutil.ReadAll(request.Body)
-	if err != nil {
-		fmt.Println("======errr=======")
+	body, bodyErr := ioutil.ReadAll(request.Body)
+	if bodyErr != nil {
+		result.WriteErrorResponse(responseWriter, bodyErr)
+		return
 	}
 
 	defer request.Body.Close()
 
 	var botMessage BotMessage
-	er := json.Unmarshal(body, &botMessage)
-	if er != nil {
-		fmt.Println("======errr1=======")
-	}
-	fmt.Println("image.ImageBase64 ::: ", botMessage.ImageBase64)
-	data, err := base64.StdEncoding.DecodeString(botMessage.ImageBase64)
-	if err != nil {
-		fmt.Println("error:", err)
+	unmarshalErr := json.Unmarshal(body, &botMessage)
+	if unmarshalErr != nil {
+		result.WriteErrorResponse(responseWriter, unmarshalErr)
 		return
 	}
-	filepath := os.TempDir() + "/" + time.Now().String() + ".jpeg"
-	f, err1 := os.Create(filepath)
-	if err1 != nil {
-		fmt.Println("errr file create  :::: ", err1)
-		panic(err)
 
+	data, decodeStringErr := base64.StdEncoding.DecodeString(botMessage.ImageBase64)
+	if decodeStringErr != nil {
+		result.WriteErrorResponse(responseWriter, decodeStringErr)
+		return
 	}
+
+	filepath := os.TempDir() + "/" + time.Now().String() + ".jpeg"
+	f, createErr := os.Create(filepath)
+	if createErr != nil {
+		result.WriteErrorResponse(responseWriter, createErr)
+		return
+	}
+
 	defer f.Close()
 
 	if _, err := f.Write(data); err != nil {
