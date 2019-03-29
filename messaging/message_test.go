@@ -195,6 +195,9 @@ var _ = Describe("Test send bot channel message with valid data", func() {
 	botMessage := BotMessage{Username: "@firstchannellink", Message: "Test send bot channel message"}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
+	if err != nil {
+		log.Fatal(err)
+	}
 	req, err := http.NewRequest("POST", "/sendchannelmessage", requestBody)
 	if err != nil {
 		log.Fatal(err)
@@ -492,7 +495,7 @@ var _ = Describe("Test send photo with Invalid data", func() {
 	os.Setenv("ACCESS_TOKEN", accessToken)
 	botMessage := []byte(`{"status":false}`)
 	requestBody := new(bytes.Buffer)
-	err := son.NewEncoder(requestBody).Encode(botMessage)
+	err := json.NewEncoder(requestBody).Encode(botMessage)
 	if err != nil {
 		log.Fatal(err)
 	}
