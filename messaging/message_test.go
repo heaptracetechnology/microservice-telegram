@@ -151,6 +151,31 @@ var _ = Describe("Test send bot message with empty message", func() {
 
 })
 
+//Test bot send message invalid message type
+var _ = Describe("Test send bot message with empty message", func() {
+	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("ACCESS_TOKEN", accessToken)
+	botMessage := []byte(`{"status":false}`)
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(botMessage)
+	req, err := http.NewRequest("POST", "/send", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(SendMessage)
+	handler.ServeHTTP(recorder, req)
+
+	Describe("Send bot message", func() {
+		Context("send bot message", func() {
+			It("Should result http.StatusBadRequest", func() {
+				Expect(http.StatusBadRequest).To(Equal(recorder.Code))
+			})
+		})
+	})
+
+})
+
 //Test bot send message
 var _ = Describe("Test send bot message with Invalid Botmessage field", func() {
 	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMAA"
@@ -231,6 +256,31 @@ var _ = Describe("Test send bot channel message with Invalid data", func() {
 	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
 	os.Setenv("ACCESS_TOKEN", accessToken)
 	botMessage := BotMessage{ImageBase64: "@firstchannellink", Message: "Test send bot channel message"}
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(botMessage)
+	req, err := http.NewRequest("POST", "/sendchannelmessage", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(SendChannelMessage)
+	handler.ServeHTTP(recorder, req)
+
+	Describe("Send bot channel message", func() {
+		Context("send bot channel message", func() {
+			It("Should result http.StatusBadRequest", func() {
+				Expect(http.StatusBadRequest).To(Equal(recorder.Code))
+			})
+		})
+	})
+
+})
+
+//Test bot send channel message
+var _ = Describe("Test send bot channel message with Invalid data", func() {
+	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("ACCESS_TOKEN", accessToken)
+	botMessage := []byte(`{"status":false}`)
 	requestBody := new(bytes.Buffer)
 	json.NewEncoder(requestBody).Encode(botMessage)
 	req, err := http.NewRequest("POST", "/sendchannelmessage", requestBody)

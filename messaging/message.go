@@ -30,17 +30,13 @@ func GetBotDetails(responseWriter http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	botDetails, err := bot.GetMe()
-	if err != nil {
-		result.WriteErrorResponse(responseWriter, err)
-		return
-	}
+	botDetails, _ := bot.GetMe()
 
 	bytes, _ := json.Marshal(botDetails)
 	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
 }
 
-//Send Group Message By Bot
+//Send Message By Bot
 func SendMessage(responseWriter http.ResponseWriter, request *http.Request) {
 
 	var accessToken = os.Getenv("ACCESS_TOKEN")
