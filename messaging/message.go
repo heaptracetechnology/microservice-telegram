@@ -1,15 +1,18 @@
 package messaging
 
 import (
+	b "bytes"
 	"encoding/base64"
 	"encoding/json"
-	"io/ioutil"
-	"net/http"
-	"os"
-	"time"
-
+	"fmt"
 	result "github.com/heaptracetechnology/microservice-telegram/result"
 	tgbotapi "gopkg.in/telegram-bot-api.v4"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"os"
+	//"strings"
+	"time"
 )
 
 type BotMessage struct {
@@ -17,14 +20,36 @@ type BotMessage struct {
 	Message     string `json:"message"`
 	Username    string `json:"username"`
 	ImageBase64 string `json:"image"`
+	URL         string `json:"url"`
 }
+
+type Subscribe struct {
+	Endpoint string `json:"endpoint"`
+	Channel  string `json:"channel"`
+	Id       string `json:"id"`
+	Pattern  string `json:"pattern"`
+	Direct   string `json:"direct"`
+	Offset   int    `json:"offset"`
+}
+
+type UpdateResponse struct {
+	UpdateId string `json:"update_id"`
+	Channel  string `json:"channel"`
+	Id       string `json:"id"`
+	Pattern  string `json:"pattern"`
+	Direct   string `json:"direct"`
+}
+
+var Listner = make(map[string]Subscribe)
+var rtmstarted bool
+var offset string
 
 //Get Bot Details
 func GetBotDetails(responseWriter http.ResponseWriter, request *http.Request) {
 
-	var accessToken = os.Getenv("ACCESS_TOKEN")
+	var botToken = os.Getenv("BOT_TOKEN")
 
-	bot, err := tgbotapi.NewBotAPI(accessToken)
+	bot, err := tgbotapi.NewBotAPI(botToken)
 	if err != nil {
 		result.WriteErrorResponse(responseWriter, err)
 		return
@@ -39,9 +64,9 @@ func GetBotDetails(responseWriter http.ResponseWriter, request *http.Request) {
 //Send Message By Bot
 func SendMessage(responseWriter http.ResponseWriter, request *http.Request) {
 
-	var accessToken = os.Getenv("ACCESS_TOKEN")
+	var botToken = os.Getenv("BOT_TOKEN")
 
-	bot, err := tgbotapi.NewBotAPI(accessToken)
+	bot, err := tgbotapi.NewBotAPI(botToken)
 	if err != nil {
 		result.WriteErrorResponse(responseWriter, err)
 		return
@@ -69,9 +94,9 @@ func SendMessage(responseWriter http.ResponseWriter, request *http.Request) {
 //Send Channel Message By Bot
 func SendChannelMessage(responseWriter http.ResponseWriter, request *http.Request) {
 
-	var accessToken = os.Getenv("ACCESS_TOKEN")
+	var botToken = os.Getenv("BOT_TOKEN")
 
-	bot, err := tgbotapi.NewBotAPI(accessToken)
+	bot, err := tgbotapi.NewBotAPI(botToken)
 	if err != nil {
 		result.WriteErrorResponse(responseWriter, err)
 		return
@@ -99,9 +124,9 @@ func SendChannelMessage(responseWriter http.ResponseWriter, request *http.Reques
 //Get Chat
 func GetChat(responseWriter http.ResponseWriter, request *http.Request) {
 
-	var accessToken = os.Getenv("ACCESS_TOKEN")
+	var botToken = os.Getenv("BOT_TOKEN")
 
-	bot, err := tgbotapi.NewBotAPI(accessToken)
+	bot, err := tgbotapi.NewBotAPI(botToken)
 	if err != nil {
 		result.WriteErrorResponse(responseWriter, err)
 		return
@@ -131,9 +156,9 @@ func GetChat(responseWriter http.ResponseWriter, request *http.Request) {
 //Leave Chat
 func LeaveChat(responseWriter http.ResponseWriter, request *http.Request) {
 
-	var accessToken = os.Getenv("ACCESS_TOKEN")
+	var botToken = os.Getenv("BOT_TOKEN")
 
-	bot, err := tgbotapi.NewBotAPI(accessToken)
+	bot, err := tgbotapi.NewBotAPI(botToken)
 	if err != nil {
 		result.WriteErrorResponse(responseWriter, err)
 		return
@@ -163,9 +188,9 @@ func LeaveChat(responseWriter http.ResponseWriter, request *http.Request) {
 //Send Photo
 func SendPhoto(responseWriter http.ResponseWriter, request *http.Request) {
 
-	var accessToken = os.Getenv("ACCESS_TOKEN")
+	var botToken = os.Getenv("BOT_TOKEN")
 
-	bot, err := tgbotapi.NewBotAPI(accessToken)
+	bot, err := tgbotapi.NewBotAPI(botToken)
 	if err != nil {
 		result.WriteErrorResponse(responseWriter, err)
 		return
@@ -216,4 +241,164 @@ func SendPhoto(responseWriter http.ResponseWriter, request *http.Request) {
 	}
 	bytes, _ := json.Marshal(reponse)
 	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
+}
+
+//Set Webhook
+func SetWebhook(responseWriter http.ResponseWriter, request *http.Request) {
+
+	var botToken = os.Getenv("BOT_TOKEN")
+
+	bot, err := tgbotapi.NewBotAPI(botToken)
+	if err != nil {
+		result.WriteErrorResponse(responseWriter, err)
+		return
+	}
+
+	body, bodyErr := ioutil.ReadAll(request.Body)
+	if bodyErr != nil {
+		result.WriteErrorResponse(responseWriter, bodyErr)
+		return
+	}
+
+	defer request.Body.Close()
+
+	var param tgbotapi.WebhookConfig
+	var botMessage BotMessage
+	unmarshalErr := json.Unmarshal(body, &botMessage)
+	if unmarshalErr != nil {
+		result.WriteErrorResponse(responseWriter, unmarshalErr)
+		return
+	}
+	param.URL, _ = url.Parse(botMessage.URL)
+
+	setWebhook, setErr := bot.SetWebhook(param)
+	if setErr != nil {
+		fmt.Println("setErr :::", setErr)
+	}
+	fmt.Println("setWebhook ::", setWebhook)
+
+	bytes, _ := json.Marshal(setWebhook)
+	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
+}
+
+//Remove Webhook
+func RemoveWebhook(responseWriter http.ResponseWriter, request *http.Request) {
+
+	var botToken = os.Getenv("BOT_TOKEN")
+
+	bot, err := tgbotapi.NewBotAPI(botToken)
+	if err != nil {
+		result.WriteErrorResponse(responseWriter, err)
+		return
+	}
+
+	removeWebhook, removeErr := bot.RemoveWebhook()
+	if removeErr != nil {
+		fmt.Println("removeErr :::", removeErr)
+	}
+	fmt.Println("removeWebhook ::", removeWebhook)
+
+	bytes, _ := json.Marshal(removeWebhook)
+	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
+}
+
+//Subscribe
+func SubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request) {
+
+	flag := false
+	var bot *tgbotapi.BotAPI
+	if flag == false {
+
+		var botToken = os.Getenv("BOT_TOKEN")
+		bot, _ = tgbotapi.NewBotAPI(botToken)
+
+		flag = true
+	}
+
+	decoder := json.NewDecoder(request.Body)
+	var listner Subscribe
+	errr := decoder.Decode(&listner)
+	if errr != nil {
+		result.WriteErrorResponse(responseWriter, errr)
+		return
+	}
+	Listner[listner.Id] = listner
+	if rtmstarted == false {
+		go TeleGramRTM(bot)
+		rtmstarted = true
+	}
+
+	bytes, _ := json.Marshal("Subscribed")
+	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
+}
+
+//Unsubscribe
+func UnsubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request) {
+
+	decoder := json.NewDecoder(request.Body)
+	var id string
+	err := decoder.Decode(&id)
+	if err != nil {
+		result.WriteErrorResponse(responseWriter, err)
+		return
+	}
+	delete(Listner, id)
+
+	bytes, _ := json.Marshal("UnSubscribed")
+	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
+}
+
+func TeleGramRTM(currentBot *tgbotapi.BotAPI) {
+
+	for {
+		if len(Listner) > 0 {
+			for k, v := range Listner {
+				go getMessageUpdates(k, v, currentBot)
+			}
+		} else {
+			rtmstarted = false
+			break
+		}
+		time.Sleep(time.Second)
+	}
+}
+
+func getMessageUpdates(userid string, sub Subscribe, currentBot *tgbotapi.BotAPI) {
+
+	hc := http.Client{}
+	var param tgbotapi.UpdateConfig
+	if sub.Offset > 0 {
+		param.Offset = sub.Offset
+	}
+
+	getUpdates, updateErr := currentBot.GetUpdates(param)
+	if updateErr != nil {
+		fmt.Println("updateErr :::", updateErr)
+	}
+
+	var messages []tgbotapi.Update
+
+	messages = getUpdates
+	var newMsg tgbotapi.Update
+
+	for _, msg := range messages {
+		newMsg = msg
+	}
+
+	requestBody := new(b.Buffer)
+	json.NewEncoder(requestBody).Encode(newMsg)
+
+	if newMsg.UpdateID != sub.Offset && newMsg.ChannelPost.Chat.UserName == sub.Channel {
+		req, errr := http.NewRequest("POST", sub.Endpoint, requestBody)
+		if errr != nil {
+			fmt.Println(" request err ::", errr)
+
+		}
+		hc.Do(req)
+		if newMsg.UpdateID > sub.Offset {
+			sub.Offset = newMsg.UpdateID
+		}
+		Listner[sub.Id] = sub
+	}
+
 }

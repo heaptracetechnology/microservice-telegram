@@ -14,6 +14,117 @@ info:
     name: MIT
     url: https://opensource.org/licenses/MIT 
 actions:
+  bot:
+    help: Start a Telegram bot
+    events:
+      hears:
+        help: Triggered anytime when any new message is posted in channel
+        arguments:
+          endpoint:
+            type: string
+            in: requestBody
+            required: true
+            help: The endpoint where to recive message updates 
+          channel:
+            type: string
+            in: requestBody
+            required: true
+            help: The channel to subscribe
+          id:
+            type: string
+            in: requestBody
+            required: true
+            help: Any unique interger Id
+        http:
+          port: 3000
+          subscribe:
+            method: post
+            path: /subscribe
+            contentType: application/json
+          unsubscribe:
+            path: /unsubscribe
+            method: post
+            contentType: application/json
+        output:
+          contentType: application/json
+          type: object
+          properties:
+            event_type:
+              help: The type of event called
+              type: string
+            content_type:
+              help: The content type of method
+              type: string
+            event_id:
+              help: The event ID
+              type: string
+            data:
+              help: The message payload returned by telegram
+              type: object
+  set_webhook:
+    help: Set webhook to recieve message streaming
+    arguments:
+      url:
+        type: string
+        in: requestBody
+        required: true
+        help: HTTPS url to set on webhook
+    http:
+      port: 3000
+      method: post
+      path: /setwebhook
+      contentType: application/json
+    output:
+      type: object
+      contentType: application/json
+      properties:
+        ok:
+          help: It return boolean value
+          type: boolean
+        result:
+          help: It return boolean value
+          type: boolean
+        error_code:
+          help: The error code
+          type: int
+        description:
+          help: The description of operation
+          type: string
+        username:
+          help: The bot username
+          type: string
+        is_bot:
+          help: The boolean value as true/false
+          type: boolean
+  get_updates:
+    help: get updates of telegram messages
+    http:
+      port: 3000
+      method: post
+      path: /getupdates
+      contentType: application/json
+    output:
+      type: string
+      contentType: application/json
+      properties:
+        ok:
+          help: It return boolean value
+          type: boolean
+        result:
+          help: It return boolean value
+          type: boolean
+        error_code:
+          help: The error code
+          type: int
+        description:
+          help: The description of operation
+          type: string
+        username:
+          help: The bot username
+          type: string
+        is_bot:
+          help: The boolean value as true/false
+          type: boolean
   get_bot:
     help: Get object with bot details
     http:
@@ -201,7 +312,7 @@ actions:
           help: The object of Photo along with file Id.
           type: object
 environment:
-  ACCESS_TOKEN:
+  BOT_TOKEN:
     type: string
     required: true
     help: Access token key for app  

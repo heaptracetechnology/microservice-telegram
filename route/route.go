@@ -53,6 +53,24 @@ var routes = Routes{
         "/sendphoto",
         messaging.SendPhoto,
     },
+    Route{
+        "SetWebhook",
+        "POST",
+        "/setwebhook",
+        messaging.SetWebhook,
+    },
+    Route{
+        "SubscribeUpdate",
+        "POST",
+        "/subscribe",
+        messaging.SubscribeUpdate,
+    },
+    Route{
+        "UnsubscribeUpdate",
+        "POST",
+        "/unsubscribe",
+        messaging.UnsubscribeUpdate,
+    },
 }
 
 func NewRouter() *mux.Router {
