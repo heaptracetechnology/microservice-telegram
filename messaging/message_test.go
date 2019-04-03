@@ -27,8 +27,8 @@ func Encodebase64(path string) (string, error) {
 
 //Test get bot details with the valid data
 var _ = Describe("Test get bot details with the valid data", func() {
-	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
 	req, err := http.NewRequest("GET", "/getbot", nil)
 	if err != nil {
 		log.Fatal(err)
@@ -70,8 +70,8 @@ var _ = Describe("Test get bot details with the invalid token", func() {
 
 //Test bot send message
 var _ = Describe("Test send bot message with valid data", func() {
-	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := BotMessage{ChatID: -349280204, Message: "Test bot send message"}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
@@ -106,8 +106,8 @@ var _ = Describe("Test send bot message with valid data", func() {
 
 //Test bot send message invalid chatid
 var _ = Describe("Test send bot message with invalid chatid", func() {
-	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := BotMessage{ChatID: -1234, Message: "Test bot send message invalid chatid"}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
@@ -134,8 +134,8 @@ var _ = Describe("Test send bot message with invalid chatid", func() {
 
 //Test bot send message invalid message type
 var _ = Describe("Test send bot message with empty message", func() {
-	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := []byte(`{"status":false}`)
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
@@ -162,8 +162,8 @@ var _ = Describe("Test send bot message with empty message", func() {
 
 //Test bot send message
 var _ = Describe("Test send bot message with Invalid Token", func() {
-	accessToken := "754194684:A"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:A"
+	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := BotMessage{ChatID: -349280204, Message: "Test bot send message"}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
@@ -190,8 +190,8 @@ var _ = Describe("Test send bot message with Invalid Token", func() {
 
 //Test bot send message to channel
 var _ = Describe("Test send bot channel message with valid data", func() {
-	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := BotMessage{Username: "@firstchannellink", Message: "Test send bot channel message"}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
@@ -218,8 +218,8 @@ var _ = Describe("Test send bot channel message with valid data", func() {
 
 //Test bot send channel message
 var _ = Describe("Test send bot channel message with Invalid username", func() {
-	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := BotMessage{ChatID: 123, Message: "Test send bot channel message"}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
@@ -246,8 +246,8 @@ var _ = Describe("Test send bot channel message with Invalid username", func() {
 
 //Test bot send channel message
 var _ = Describe("Test send bot channel message with Invalid data", func() {
-	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := []byte(`{"status":false}`)
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
@@ -274,8 +274,8 @@ var _ = Describe("Test send bot channel message with Invalid data", func() {
 
 //Test bot send message to channel
 var _ = Describe("Test send bot channel message with Invalid token", func() {
-	accessToken := "754194684:A"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:A"
+	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := BotMessage{Username: "@firstchannellink", Message: "Test send bot channel message"}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
@@ -302,8 +302,8 @@ var _ = Describe("Test send bot channel message with Invalid token", func() {
 
 //Test GetChat
 var _ = Describe("Test GetChat with valid data", func() {
-	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := BotMessage{ChatID: -349280204}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
@@ -330,8 +330,8 @@ var _ = Describe("Test GetChat with valid data", func() {
 
 //Test GetChat
 var _ = Describe("Test GetChat with Invalid Chat_Id", func() {
-	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := BotMessage{ChatID: -34928020}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
@@ -358,8 +358,8 @@ var _ = Describe("Test GetChat with Invalid Chat_Id", func() {
 
 //Test GetChat
 var _ = Describe("Test GetChat with Invalid data", func() {
-	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := []byte(`{"status":false}`)
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
@@ -386,8 +386,8 @@ var _ = Describe("Test GetChat with Invalid data", func() {
 
 //Test GetChat
 var _ = Describe("Test GetChat with Invalid token", func() {
-	accessToken := "754194684:AA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AA"
+	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := BotMessage{Username: "-349280204"}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
@@ -414,8 +414,8 @@ var _ = Describe("Test GetChat with Invalid token", func() {
 
 //Test Send Photo
 var _ = Describe("Test send photo with valid data", func() {
-	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
 
 	filepath, _ := filepath.Abs("../testImage/dice.jpeg")
 	base64Data, base64Err := Encodebase64(filepath)
@@ -456,8 +456,8 @@ var _ = Describe("Test send photo with valid data", func() {
 
 //Test Send Photo
 var _ = Describe("Test send photo with Invalid Chat_Id", func() {
-	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
 
 	filepath, _ := filepath.Abs("../testImage/dice.jpeg")
 	base64Data, base64Err := Encodebase64(filepath)
@@ -491,8 +491,8 @@ var _ = Describe("Test send photo with Invalid Chat_Id", func() {
 
 //Test Send Photo
 var _ = Describe("Test send photo with Invalid data", func() {
-	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := []byte(`{"status":false}`)
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
@@ -519,8 +519,8 @@ var _ = Describe("Test send photo with Invalid data", func() {
 
 //Test Send Photo
 var _ = Describe("Test send photo with Invalid token", func() {
-	accessToken := "754194684:AA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AA"
+	os.Setenv("BOT_TOKEN", botToken)
 
 	filepath, _ := filepath.Abs("../testImage/dice.jpeg")
 	base64Data, base64Err := Encodebase64(filepath)
@@ -552,31 +552,31 @@ var _ = Describe("Test send photo with Invalid token", func() {
 
 })
 
-//Subscribe
-var _ = Describe("Subscribe Updates", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", botToken)
-	botMessage := Subscribe{Endpoint: "https://webhook.site/3cee781d-0a87-4966-bdec-9635436294e9",
-		Id:      "1",
-		Channel: "channeltest02"}
-	requestBody := new(bytes.Buffer)
-	json.NewEncoder(requestBody).Encode(botMessage)
-	req, err := http.NewRequest("POST", "/subscribe", requestBody)
-	if err != nil {
-		log.Fatal(err)
-	}
-	recorder := httptest.NewRecorder()
-	handler := http.HandlerFunc(SubscribeUpdate)
-	handler.ServeHTTP(recorder, req)
+// //Subscribe
+// var _ = Describe("Subscribe Updates", func() {
+// 	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+// 	os.Setenv("BOT_TOKEN", botToken)
+// 	botMessage := Subscribe{Endpoint: "https://webhook.site/3cee781d-0a87-4966-bdec-9635436294e9",
+// 		Id:      "1",
+// 		Channel: "channeltest02"}
+// 	requestBody := new(bytes.Buffer)
+// 	json.NewEncoder(requestBody).Encode(botMessage)
+// 	req, err := http.NewRequest("POST", "/subscribe", requestBody)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	recorder := httptest.NewRecorder()
+// 	handler := http.HandlerFunc(SubscribeUpdate)
+// 	handler.ServeHTTP(recorder, req)
 
-	Describe("Subscribe", func() {
-		Context("Subscribe", func() {
-			It("Should result http.StatusOK", func() {
-				Expect(http.StatusOK).To(Equal(recorder.Code))
-			})
-		})
-	})
-})
+// 	Describe("Subscribe", func() {
+// 		Context("Subscribe", func() {
+// 			It("Should result http.StatusOK", func() {
+// 				Expect(http.StatusOK).To(Equal(recorder.Code))
+// 			})
+// 		})
+// 	})
+// })
 
 //Unsubscribe
 var _ = Describe("Unsubscribe Update", func() {
@@ -604,8 +604,8 @@ var _ = Describe("Unsubscribe Update", func() {
 
 //Test Leave Chat
 var _ = Describe("Test Leave Chat with valid data", func() {
-	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := BotMessage{ChatID: -34928020}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
@@ -640,8 +640,8 @@ var _ = Describe("Test Leave Chat with valid data", func() {
 
 //Test Leave Chat
 var _ = Describe("Test Leave Chat with Invalid Chat_Id", func() {
-	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := BotMessage{ChatID: -349}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
@@ -670,8 +670,8 @@ var _ = Describe("Test Leave Chat with Invalid Chat_Id", func() {
 
 //Test Leave Chat
 var _ = Describe("Test Leave Chat with Invalid data", func() {
-	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := []byte(`{"status":false}`)
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
@@ -698,8 +698,8 @@ var _ = Describe("Test Leave Chat with Invalid data", func() {
 
 //Test Leave Chat
 var _ = Describe("Test Leave Chat with Invalid token", func() {
-	accessToken := "754194684:A"
-	os.Setenv("BOT_TOKEN", accessToken)
+	botToken := "754194684:A"
+	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := BotMessage{Message: "-349280204"}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)

@@ -286,7 +286,9 @@ func UnsubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request
 		result.WriteErrorResponse(responseWriter, err)
 		return
 	}
-	delete(Listner, id)
+	if len(Listner) > 0 {
+		delete(Listner, id)
+	}
 
 	bytes, _ := json.Marshal("UnSubscribed")
 	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
