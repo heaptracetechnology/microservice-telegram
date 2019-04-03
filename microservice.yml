@@ -20,11 +20,11 @@ actions:
       hears:
         help: Triggered anytime when any new message is posted in channel
         arguments:
-          endpoint:
-            type: string
-            in: requestBody
-            required: true
-            help: The endpoint where to recive message updates 
+          # endpoint:
+          #   type: string
+          #   in: requestBody
+          #   required: true
+          #   help: The endpoint where to receive message updates 
           channel:
             type: string
             in: requestBody
@@ -35,7 +35,7 @@ actions:
             in: requestBody
             required: true
             help: Any unique interger Id
-        http:
+        http: 
           port: 3000
           subscribe:
             method: post
@@ -45,7 +45,7 @@ actions:
             path: /unsubscribe
             method: post
             contentType: application/json
-        output:
+        output: 
           contentType: application/json
           type: object
           properties:

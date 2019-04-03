@@ -9,9 +9,7 @@ import (
 	tgbotapi "gopkg.in/telegram-bot-api.v4"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	"os"
-	//"strings"
 	"time"
 )
 
@@ -24,12 +22,10 @@ type BotMessage struct {
 }
 
 type Subscribe struct {
-	Endpoint string `json:"endpoint"`
 	Channel  string `json:"channel"`
-	Id       string `json:"id"`
-	Pattern  string `json:"pattern"`
-	Direct   string `json:"direct"`
 	Offset   int    `json:"offset"`
+	Endpoint string `json:"endpoint"`
+	Id       string `json:"id"`
 }
 
 type UpdateResponse struct {
@@ -38,6 +34,13 @@ type UpdateResponse struct {
 	Id       string `json:"id"`
 	Pattern  string `json:"pattern"`
 	Direct   string `json:"direct"`
+}
+
+type Payload struct {
+	EventId     string          `json:"eventID"`
+	EventType   string          `json:"eventType"`
+	ContentType string          `json:"contentType"`
+	Data        tgbotapi.Update `json:"data"`
 }
 
 var Listner = make(map[string]Subscribe)
@@ -243,75 +246,15 @@ func SendPhoto(responseWriter http.ResponseWriter, request *http.Request) {
 	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
 }
 
-//Set Webhook
-func SetWebhook(responseWriter http.ResponseWriter, request *http.Request) {
-
-	var botToken = os.Getenv("BOT_TOKEN")
-
-	bot, err := tgbotapi.NewBotAPI(botToken)
-	if err != nil {
-		result.WriteErrorResponse(responseWriter, err)
-		return
-	}
-
-	body, bodyErr := ioutil.ReadAll(request.Body)
-	if bodyErr != nil {
-		result.WriteErrorResponse(responseWriter, bodyErr)
-		return
-	}
-
-	defer request.Body.Close()
-
-	var param tgbotapi.WebhookConfig
-	var botMessage BotMessage
-	unmarshalErr := json.Unmarshal(body, &botMessage)
-	if unmarshalErr != nil {
-		result.WriteErrorResponse(responseWriter, unmarshalErr)
-		return
-	}
-	param.URL, _ = url.Parse(botMessage.URL)
-
-	setWebhook, setErr := bot.SetWebhook(param)
-	if setErr != nil {
-		fmt.Println("setErr :::", setErr)
-	}
-	fmt.Println("setWebhook ::", setWebhook)
-
-	bytes, _ := json.Marshal(setWebhook)
-	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
-}
-
-//Remove Webhook
-func RemoveWebhook(responseWriter http.ResponseWriter, request *http.Request) {
-
-	var botToken = os.Getenv("BOT_TOKEN")
-
-	bot, err := tgbotapi.NewBotAPI(botToken)
-	if err != nil {
-		result.WriteErrorResponse(responseWriter, err)
-		return
-	}
-
-	removeWebhook, removeErr := bot.RemoveWebhook()
-	if removeErr != nil {
-		fmt.Println("removeErr :::", removeErr)
-	}
-	fmt.Println("removeWebhook ::", removeWebhook)
-
-	bytes, _ := json.Marshal(removeWebhook)
-	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
-}
-
 //Subscribe
 func SubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request) {
 
 	flag := false
 	var bot *tgbotapi.BotAPI
-	if flag == false {
 
+	if flag == false {
 		var botToken = os.Getenv("BOT_TOKEN")
 		bot, _ = tgbotapi.NewBotAPI(botToken)
-
 		flag = true
 	}
 
@@ -322,6 +265,7 @@ func SubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request) 
 		result.WriteErrorResponse(responseWriter, errr)
 		return
 	}
+
 	Listner[listner.Id] = listner
 	if rtmstarted == false {
 		go TeleGramRTM(bot)
@@ -373,7 +317,7 @@ func getMessageUpdates(userid string, sub Subscribe, currentBot *tgbotapi.BotAPI
 
 	getUpdates, updateErr := currentBot.GetUpdates(param)
 	if updateErr != nil {
-		fmt.Println("updateErr :::", updateErr)
+		fmt.Println("updateErr :", updateErr)
 	}
 
 	var messages []tgbotapi.Update
@@ -385,14 +329,19 @@ func getMessageUpdates(userid string, sub Subscribe, currentBot *tgbotapi.BotAPI
 		newMsg = msg
 	}
 
-	requestBody := new(b.Buffer)
-	json.NewEncoder(requestBody).Encode(newMsg)
+	var response Payload
 
+	response.ContentType = "application" + "/" + "json"
+	response.EventType = "hears"
+	response.EventId = sub.Id
+	response.Data = newMsg
+
+	requestBody := new(b.Buffer)
+	json.NewEncoder(requestBody).Encode(response)
 	if newMsg.UpdateID != sub.Offset && newMsg.ChannelPost.Chat.UserName == sub.Channel {
 		req, errr := http.NewRequest("POST", sub.Endpoint, requestBody)
 		if errr != nil {
-			fmt.Println(" request err ::", errr)
-
+			fmt.Println(" request err :", errr)
 		}
 		hc.Do(req)
 		if newMsg.UpdateID > sub.Offset {
@@ -400,5 +349,4 @@ func getMessageUpdates(userid string, sub Subscribe, currentBot *tgbotapi.BotAPI
 		}
 		Listner[sub.Id] = sub
 	}
-
 }
