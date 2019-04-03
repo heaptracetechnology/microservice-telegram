@@ -54,12 +54,6 @@ var routes = Routes{
         messaging.SendPhoto,
     },
     Route{
-        "SetWebhook",
-        "POST",
-        "/setwebhook",
-        messaging.SetWebhook,
-    },
-    Route{
         "SubscribeUpdate",
         "POST",
         "/subscribe",

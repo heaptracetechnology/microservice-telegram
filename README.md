@@ -26,35 +26,43 @@ omg build
 
 ##### Get Bot Details
 ```sh
-$ omg run get_bot -e ACCESS_TOKEN=<ACCESS_TOKEN>
+$ omg run get_bot -e BOT_TOKEN=<BOT_TOKEN>
 ```
 ##### Send Message TO Group/User
 ```sh
-$ omg run send -a chat_id=<CHAT_ID> -a message=<MESSAGE> -e ACCESS_TOKEN=<ACCESS_TOKEN>
+$ omg run send -a chat_id=<CHAT_ID> -a message=<MESSAGE> -e BOT_TOKEN=<BOT_TOKEN>
 ```
 NOTE : Use "-" as prefix in ChatID for group(chat_id = "-12345678") else for user (chat_id = "12345678")
 
 ##### Send Bot Channel Message
 ```sh
-$ omg run channel_message -a username=<USERNAME> -a message=<MESSAGE> -e ACCESS_TOKEN=<ACCESS_TOKEN>
+$ omg run channel_message -a username=<USERNAME> -a message=<MESSAGE> -e BOT_TOKEN=<BOT_TOKEN>
 ```
 ##### Send Bot Channel Message (EXAMPLE)
 ```sh
-$ omg run channel_message -a username="@firstchannel" -a message="Hello World" -e ACCESS_TOKEN=<ACCESS_TOKEN>
+$ omg run channel_message -a username="@firstchannel" -a message="Hello World" -e BOT_TOKEN=<BOT_TOKEN>
 ```
 ##### Get Chat
 ```sh
-$ omg run get_chat -a chat_id=<CHAT_ID> -e ACCESS_TOKEN=<ACCESS_TOKEN>
+$ omg run get_chat -a chat_id=<CHAT_ID> -e BOT_TOKEN=<BOT_TOKEN>
 ```
 ##### Leave Chat
 ```sh
-$ omg run leave_chat -a chat_id=<CHAT_ID> -e ACCESS_TOKEN=<ACCESS_TOKEN>
+$ omg run leave_chat -a chat_id=<CHAT_ID> -e BOT_TOKEN=<BOT_TOKEN>
 ```
 ##### Send Photo
 ```sh
-$ omg run send_photo -a chat_id=<CHAT_ID> -a image=<BASE64_DATA> -e ACCESS_TOKEN=<ACCESS_TOKEN>
+$ omg run send_photo -a chat_id=<CHAT_ID> -a image=<BASE64_DATA> -e BOT_TOKEN=<BOT_TOKEN>
 ```
 NOTE : Use "-" as prefix in ChatID for group(chat_id = "-12345678") else for user (chat_id = "12345678")
+##### Subscribe
+```sh
+$ omg subscribe bot hears -a channel=<CHANNEL_USERNAME> -e BOT_TOKEN=<BOT_TOKEN>
+```
+##### Unsubscribe
+```sh
+$ omg unsubscribe bot hears -a id=<ID> -e BOT_TOKEN=<BOT_TOKEN>
+```
 ## License
 ### [MIT](https://choosealicense.com/licenses/mit/)
 
