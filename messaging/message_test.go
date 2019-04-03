@@ -552,6 +552,56 @@ var _ = Describe("Test send photo with Invalid token", func() {
 
 })
 
+//Subscribe
+var _ = Describe("Subscribe Updates", func() {
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
+	botMessage := Subscribe{Endpoint: "https://webhook.site/3cee781d-0a87-4966-bdec-9635436294e9",
+		Id:      "1",
+		Channel: "channeltest02"}
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(botMessage)
+	req, err := http.NewRequest("POST", "/subscribe", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(SubscribeUpdate)
+	handler.ServeHTTP(recorder, req)
+
+	Describe("Subscribe", func() {
+		Context("Subscribe", func() {
+			It("Should result http.StatusOK", func() {
+				Expect(http.StatusOK).To(Equal(recorder.Code))
+			})
+		})
+	})
+})
+
+//Unsubscribe
+var _ = Describe("Unsubscribe Update", func() {
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
+	id := "1"
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(id)
+	req, err := http.NewRequest("POST", "/unsubscribe", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(UnsubscribeUpdate)
+	handler.ServeHTTP(recorder, req)
+
+	Describe("Unsubscribe", func() {
+		Context("Unsubscribe", func() {
+			It("Should result http.StatusOK", func() {
+				Expect(http.StatusOK).To(Equal(recorder.Code))
+			})
+		})
+	})
+})
+
 //Test Leave Chat
 var _ = Describe("Test Leave Chat with valid data", func() {
 	accessToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
@@ -672,54 +722,4 @@ var _ = Describe("Test Leave Chat with Invalid token", func() {
 		})
 	})
 
-})
-
-//Subscribe
-var _ = Describe("Subscribe Updates", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", botToken)
-	botMessage := Subscribe{Endpoint: "https://webhook.site/3cee781d-0a87-4966-bdec-9635436294e9",
-		Id:      "1",
-		Channel: "channeltest02"}
-	requestBody := new(bytes.Buffer)
-	json.NewEncoder(requestBody).Encode(botMessage)
-	req, err := http.NewRequest("POST", "/subscribe", requestBody)
-	if err != nil {
-		log.Fatal(err)
-	}
-	recorder := httptest.NewRecorder()
-	handler := http.HandlerFunc(SubscribeUpdate)
-	handler.ServeHTTP(recorder, req)
-
-	Describe("Subscribe", func() {
-		Context("Subscribe", func() {
-			It("Should result http.StatusOK", func() {
-				Expect(http.StatusOK).To(Equal(recorder.Code))
-			})
-		})
-	})
-})
-
-//Unsubscribe
-var _ = Describe("Unsubscribe Update", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", botToken)
-	id := "1"
-	requestBody := new(bytes.Buffer)
-	json.NewEncoder(requestBody).Encode(id)
-	req, err := http.NewRequest("POST", "/unsubscribe", requestBody)
-	if err != nil {
-		log.Fatal(err)
-	}
-	recorder := httptest.NewRecorder()
-	handler := http.HandlerFunc(UnsubscribeUpdate)
-	handler.ServeHTTP(recorder, req)
-
-	Describe("Unsubscribe", func() {
-		Context("Unsubscribe", func() {
-			It("Should result http.StatusOK", func() {
-				Expect(http.StatusOK).To(Equal(recorder.Code))
-			})
-		})
-	})
 })
