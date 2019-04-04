@@ -699,26 +699,26 @@ var _ = Describe("Test Leave Chat with Invalid token", func() {
 
 })
 
-//Unsubscribe
-var _ = Describe("Unsubscribe Update", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", botToken)
-	id := "1"
-	requestBody := new(bytes.Buffer)
-	json.NewEncoder(requestBody).Encode(id)
-	req, err := http.NewRequest("POST", "/unsubscribe", requestBody)
-	if err != nil {
-		log.Fatal(err)
-	}
-	recorder := httptest.NewRecorder()
-	handler := http.HandlerFunc(UnsubscribeUpdate)
-	handler.ServeHTTP(recorder, req)
+// //Unsubscribe
+// var _ = Describe("Unsubscribe Update", func() {
+// 	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+// 	os.Setenv("BOT_TOKEN", botToken)
+// 	id := "1"
+// 	requestBody := new(bytes.Buffer)
+// 	json.NewEncoder(requestBody).Encode(id)
+// 	req, err := http.NewRequest("POST", "/unsubscribe", requestBody)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	recorder := httptest.NewRecorder()
+// 	handler := http.HandlerFunc(UnsubscribeUpdate)
+// 	handler.ServeHTTP(recorder, req)
 
-	Describe("Unsubscribe", func() {
-		Context("Unsubscribe", func() {
-			It("Should result http.StatusOK", func() {
-				Expect(http.StatusOK).To(Equal(recorder.Code))
-			})
-		})
-	})
-})
+// 	Describe("Unsubscribe", func() {
+// 		Context("Unsubscribe", func() {
+// 			It("Should result http.StatusOK", func() {
+// 				Expect(http.StatusOK).To(Equal(recorder.Code))
+// 			})
+// 		})
+// 	})
+// })
