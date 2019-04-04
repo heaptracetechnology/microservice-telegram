@@ -630,7 +630,6 @@ var _ = Describe("Test Leave Chat with valid data", func() {
 			} else {
 				It("Should result http.StatusBadRequest", func() {
 					Expect(http.StatusBadRequest).To(Equal(recorder.Code))
-					fmt.Println("Bot is already leaved group")
 				})
 			}
 
@@ -661,7 +660,6 @@ var _ = Describe("Test Leave Chat with Invalid Chat_Id", func() {
 		Context("Leave Chat", func() {
 			It("Should result http.StatusBadRequest", func() {
 				Expect(http.StatusBadRequest).To(Equal(recorder.Code))
-				fmt.Println("Bot is already leaved group")
 			})
 
 		})

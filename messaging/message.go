@@ -296,20 +296,21 @@ func UnsubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request
 }
 
 func TeleGramRTM(currentBot *tgbotapi.BotAPI) {
-
+	istest := false
 	for {
 		if len(Listner) > 0 {
 			for k, v := range Listner {
 				go getMessageUpdates(k, v, currentBot)
-				if v.IsTesting == true {
-					break
-				}
+				istest = v.IsTesting
 			}
 		} else {
 			rtmstarted = false
 			break
 		}
 		time.Sleep(time.Second)
+		if istest == true {
+			break
+		}
 	}
 }
 
