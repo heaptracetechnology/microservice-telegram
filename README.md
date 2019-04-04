@@ -2,7 +2,7 @@
 An OMG service for Telegram, is a cloud-based instant messaging service.
 
 [![Open Microservice Guide](https://img.shields.io/badge/OMG-enabled-brightgreen.svg?style=for-the-badge)](https://microservice.guide)
-[![Build Status](https://travis-ci.com/heaptracetechnology/microservice-telegram.svg?branch=master)](https://travis-ci.com/heaptracetechnology/microservice-telegram)
+[![Build Status](https://travis-ci.org/heaptracetechnology/microservice-telegram.svg?branch=master)](https://travis-ci.org/heaptracetechnology/microservice-telegram)
 [![codecov](https://codecov.io/gh/heaptracetechnology/microservice-telegram/branch/master/graph/badge.svg)](https://codecov.io/gh/heaptracetechnology/microservice-telegram)
 
 
