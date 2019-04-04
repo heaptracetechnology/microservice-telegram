@@ -309,7 +309,7 @@ func TeleGramRTM(currentBot *tgbotapi.BotAPI) {
 		}
 		time.Sleep(time.Second)
 		if istest == true {
-			break
+			return
 		}
 	}
 }
