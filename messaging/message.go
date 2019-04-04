@@ -22,10 +22,11 @@ type BotMessage struct {
 }
 
 type Subscribe struct {
-	Channel  string `json:"channel"`
-	Offset   int    `json:"offset"`
-	Endpoint string `json:"endpoint"`
-	Id       string `json:"id"`
+	Channel   string `json:"channel"`
+	Offset    int    `json:"offset"`
+	Endpoint  string `json:"endpoint"`
+	Id        string `json:"id"`
+	IsTesting bool   `json:"istesting"`
 }
 
 type UpdateResponse struct {
@@ -300,6 +301,9 @@ func TeleGramRTM(currentBot *tgbotapi.BotAPI) {
 		if len(Listner) > 0 {
 			for k, v := range Listner {
 				go getMessageUpdates(k, v, currentBot)
+				if v.IsTesting == true {
+					break
+				}
 			}
 		} else {
 			rtmstarted = false

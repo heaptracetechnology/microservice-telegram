@@ -552,31 +552,32 @@ var _ = Describe("Test send photo with Invalid token", func() {
 
 })
 
-// //Subscribe
-// var _ = Describe("Subscribe Updates", func() {
-// 	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-// 	os.Setenv("BOT_TOKEN", botToken)
-// 	botMessage := Subscribe{Endpoint: "https://webhook.site/3cee781d-0a87-4966-bdec-9635436294e9",
-// 		Id:      "1",
-// 		Channel: "channeltest02"}
-// 	requestBody := new(bytes.Buffer)
-// 	json.NewEncoder(requestBody).Encode(botMessage)
-// 	req, err := http.NewRequest("POST", "/subscribe", requestBody)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	recorder := httptest.NewRecorder()
-// 	handler := http.HandlerFunc(SubscribeUpdate)
-// 	handler.ServeHTTP(recorder, req)
+//Subscribe
+var _ = Describe("Subscribe Updates", func() {
+	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+	os.Setenv("BOT_TOKEN", botToken)
+	botMessage := Subscribe{Endpoint: "https://webhook.site/3cee781d-0a87-4966-bdec-9635436294e9",
+		Id:        "1",
+		Channel:   "channeltest02",
+		IsTesting: true}
+	requestBody := new(bytes.Buffer)
+	json.NewEncoder(requestBody).Encode(botMessage)
+	req, err := http.NewRequest("POST", "/subscribe", requestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	recorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(SubscribeUpdate)
+	handler.ServeHTTP(recorder, req)
 
-// 	Describe("Subscribe", func() {
-// 		Context("Subscribe", func() {
-// 			It("Should result http.StatusOK", func() {
-// 				Expect(http.StatusOK).To(Equal(recorder.Code))
-// 			})
-// 		})
-// 	})
-// })
+	Describe("Subscribe", func() {
+		Context("Subscribe", func() {
+			It("Should result http.StatusOK", func() {
+				Expect(http.StatusOK).To(Equal(recorder.Code))
+			})
+		})
+	})
+})
 
 //Unsubscribe
 var _ = Describe("Unsubscribe Update", func() {
