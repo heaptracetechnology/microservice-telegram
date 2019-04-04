@@ -5,12 +5,13 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	result "github.com/heaptracetechnology/microservice-telegram/result"
-	tgbotapi "gopkg.in/telegram-bot-api.v4"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
+
+	result "github.com/heaptracetechnology/microservice-telegram/result"
+	tgbotapi "gopkg.in/telegram-bot-api.v4"
 )
 
 type BotMessage struct {
@@ -300,8 +301,9 @@ func TeleGramRTM(currentBot *tgbotapi.BotAPI) {
 	for {
 		if len(Listner) > 0 {
 			for k, v := range Listner {
-				go getMessageUpdates(k, v, currentBot)
 				istest = v.IsTesting
+				go getMessageUpdates(k, v, currentBot)
+
 			}
 		} else {
 			rtmstarted = false
@@ -309,7 +311,7 @@ func TeleGramRTM(currentBot *tgbotapi.BotAPI) {
 		}
 		time.Sleep(time.Second)
 		if istest == true {
-			return
+			break
 		}
 	}
 }
