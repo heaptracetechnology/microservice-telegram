@@ -565,7 +565,10 @@ var _ = Describe("Subscribe Updates", func() {
 		Data:      data,
 	}
 	requestBody := new(bytes.Buffer)
-	json.NewEncoder(requestBody).Encode(botMessage)
+	err := json.NewEncoder(requestBody).Encode(botMessage)
+	if err != nil {
+		fmt.Println(" request err :", err)
+	}
 	req, err := http.NewRequest("POST", "/subscribe", requestBody)
 	if err != nil {
 		log.Fatal(err)
@@ -585,7 +588,10 @@ var _ = Describe("Subscribe Updates", func() {
 
 	id := "1"
 	requestBody1 := new(bytes.Buffer)
-	json.NewEncoder(requestBody).Encode(id)
+	errjson := json.NewEncoder(requestBody).Encode(id)
+	if err != nil {
+		fmt.Println(" request err :", errjson)
+	}
 	req1, err := http.NewRequest("POST", "/unsubscribe", requestBody1)
 	if err != nil {
 		log.Fatal(err)

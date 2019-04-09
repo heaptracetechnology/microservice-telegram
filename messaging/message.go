@@ -5,12 +5,13 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	result "github.com/heaptracetechnology/microservice-telegram/result"
-	tgbotapi "gopkg.in/telegram-bot-api.v4"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
+
+	result "github.com/heaptracetechnology/microservice-telegram/result"
+	tgbotapi "gopkg.in/telegram-bot-api.v4"
 )
 
 type BotMessage struct {
@@ -256,9 +257,9 @@ func SendPhoto(responseWriter http.ResponseWriter, request *http.Request) {
 //Subscribe
 func SubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request) {
 
-	isBotRunning := false
+	//isBotRunning := false
 
-	if !isBotRunning {
+	if isBotRunning != true {
 		var botToken = os.Getenv("BOT_TOKEN")
 		bot, _ = tgbotapi.NewBotAPI(botToken)
 		isBotRunning = true
@@ -277,7 +278,7 @@ func SubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request) 
 	fmt.Println(string(res2))
 
 	Listner[listner.Id] = listner
-	if !rtmstarted {
+	if rtmstarted != true {
 		go TeleGramRTM()
 		rtmstarted = true
 	}
@@ -318,7 +319,7 @@ func TeleGramRTM() {
 			break
 		}
 		time.Sleep(3 * time.Second)
-		if istest == true {
+		if istest {
 			close(quit)
 			break
 		}
@@ -356,7 +357,10 @@ func getMessageUpdates(userid string, sub Subscribe) {
 	response.Data = newMsg
 
 	requestBody := new(b.Buffer)
-	json.NewEncoder(requestBody).Encode(response)
+	err := json.NewEncoder(requestBody).Encode(response)
+	if err != nil {
+		fmt.Println(" request err :", err)
+	}
 
 	if newMsg.UpdateID != sub.Offset && newMsg.ChannelPost.Chat.UserName == sub.Data.Channel {
 
@@ -364,7 +368,10 @@ func getMessageUpdates(userid string, sub Subscribe) {
 		if errr != nil {
 			fmt.Println(" request err :", errr)
 		}
-		hc.Do(req)
+		_, err := hc.Do(req)
+		if err != nil {
+			fmt.Println("Client error", err)
+		}
 		if newMsg.UpdateID > sub.Offset {
 			sub.Offset = newMsg.UpdateID
 		}
