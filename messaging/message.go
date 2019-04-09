@@ -51,7 +51,8 @@ type Payload struct {
 
 var Listner = make(map[string]Subscribe)
 var rtmstarted bool
-var offset string
+
+//var offset string
 var isBotRunning bool
 var bot *tgbotapi.BotAPI
 
@@ -259,7 +260,7 @@ func SubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request) 
 
 	//isBotRunning := false
 
-	if isBotRunning != true {
+	if !isBotRunning {
 		var botToken = os.Getenv("BOT_TOKEN")
 		bot, _ = tgbotapi.NewBotAPI(botToken)
 		isBotRunning = true
@@ -278,7 +279,7 @@ func SubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request) 
 	fmt.Println(string(res2))
 
 	Listner[listner.Id] = listner
-	if rtmstarted != true {
+	if !rtmstarted {
 		go TeleGramRTM()
 		rtmstarted = true
 	}
@@ -339,9 +340,9 @@ func getMessageUpdates(userid string, sub Subscribe) {
 		fmt.Println("updateErr :", updateErr)
 	}
 
-	var messages []tgbotapi.Update
+	//var messages []tgbotapi.Update
 
-	messages = getUpdates
+	var messages = getUpdates
 	var newMsg tgbotapi.Update
 
 	for _, msg := range messages {
