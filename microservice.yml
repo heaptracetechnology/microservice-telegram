@@ -19,22 +19,12 @@ actions:
     events:
       hears:
         help: Triggered anytime when any new message is posted in channel
-        arguments:
-          # endpoint:
-          #   type: string
-          #   in: requestBody
-          #   required: true
-          #   help: The endpoint where to receive message updates 
+        arguments: 
           channel:
             type: string
             in: requestBody
             required: true
             help: The channel to subscribe
-          id:
-            type: string
-            in: requestBody
-            required: true
-            help: Any unique interger Id
         http: 
           port: 3000
           subscribe:

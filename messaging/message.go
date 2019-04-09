@@ -22,11 +22,15 @@ type BotMessage struct {
 }
 
 type Subscribe struct {
-	Channel   string `json:"channel"`
+	Data      Data   `json:"data"`
 	Offset    int    `json:"offset"`
 	Endpoint  string `json:"endpoint"`
 	Id        string `json:"id"`
 	IsTesting bool   `json:"istesting"`
+}
+
+type Data struct {
+	Channel string `json:"channel"`
 }
 
 type UpdateResponse struct {
@@ -47,6 +51,8 @@ type Payload struct {
 var Listner = make(map[string]Subscribe)
 var rtmstarted bool
 var offset string
+var isBotRunning bool
+var bot *tgbotapi.BotAPI
 
 //Get Bot Details
 func GetBotDetails(responseWriter http.ResponseWriter, request *http.Request) {
@@ -249,17 +255,18 @@ func SendPhoto(responseWriter http.ResponseWriter, request *http.Request) {
 
 //Subscribe
 func SubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request) {
+	res1, _ := json.Marshal(request.Body)
+	fmt.Println("request.Body,............. ::", res1)
+	isBotRunning := false
 
-	flag := false
-	var bot *tgbotapi.BotAPI
-
-	if flag == false {
+	if !isBotRunning {
 		var botToken = os.Getenv("BOT_TOKEN")
 		bot, _ = tgbotapi.NewBotAPI(botToken)
-		flag = true
+		isBotRunning = true
 	}
 
 	decoder := json.NewDecoder(request.Body)
+
 	var listner Subscribe
 	errr := decoder.Decode(&listner)
 	if errr != nil {
@@ -267,9 +274,12 @@ func SubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request) 
 		return
 	}
 
+	res2, _ := json.Marshal(listner)
+	fmt.Println(string(res2))
+
 	Listner[listner.Id] = listner
-	if rtmstarted == false {
-		go TeleGramRTM(bot)
+	if !rtmstarted {
+		go TeleGramRTM()
 		rtmstarted = true
 	}
 
@@ -295,26 +305,28 @@ func UnsubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request
 	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
 }
 
-func TeleGramRTM(currentBot *tgbotapi.BotAPI) {
+func TeleGramRTM() {
 	istest := false
+	quit := make(chan struct{})
 	for {
 		if len(Listner) > 0 {
 			for k, v := range Listner {
-				go getMessageUpdates(k, v, currentBot)
+				go getMessageUpdates(k, v)
 				istest = v.IsTesting
 			}
 		} else {
 			rtmstarted = false
 			break
 		}
-		time.Sleep(time.Second)
+		time.Sleep(3 * time.Second)
 		if istest == true {
-			return
+			close(quit)
+			break
 		}
 	}
 }
 
-func getMessageUpdates(userid string, sub Subscribe, currentBot *tgbotapi.BotAPI) {
+func getMessageUpdates(userid string, sub Subscribe) {
 
 	hc := http.Client{}
 	var param tgbotapi.UpdateConfig
@@ -322,7 +334,7 @@ func getMessageUpdates(userid string, sub Subscribe, currentBot *tgbotapi.BotAPI
 		param.Offset = sub.Offset
 	}
 
-	getUpdates, updateErr := currentBot.GetUpdates(param)
+	getUpdates, updateErr := bot.GetUpdates(param)
 	if updateErr != nil {
 		fmt.Println("updateErr :", updateErr)
 	}
@@ -334,6 +346,7 @@ func getMessageUpdates(userid string, sub Subscribe, currentBot *tgbotapi.BotAPI
 
 	for _, msg := range messages {
 		newMsg = msg
+
 	}
 
 	var response Payload
@@ -345,7 +358,11 @@ func getMessageUpdates(userid string, sub Subscribe, currentBot *tgbotapi.BotAPI
 
 	requestBody := new(b.Buffer)
 	json.NewEncoder(requestBody).Encode(response)
-	if newMsg.UpdateID != sub.Offset && newMsg.ChannelPost.Chat.UserName == sub.Channel {
+	dsaas, _ := json.Marshal(response)
+	if newMsg.UpdateID != sub.Offset && newMsg.ChannelPost.Chat.UserName == sub.Data.Channel {
+		fmt.Println("dsaas :", string(dsaas))
+		fmt.Println("Endpoint :", sub.Endpoint)
+
 		req, errr := http.NewRequest("POST", sub.Endpoint, requestBody)
 		if errr != nil {
 			fmt.Println(" request err :", errr)
@@ -354,6 +371,7 @@ func getMessageUpdates(userid string, sub Subscribe, currentBot *tgbotapi.BotAPI
 		if newMsg.UpdateID > sub.Offset {
 			sub.Offset = newMsg.UpdateID
 		}
+		fmt.Println("ssssssssssssssssssssssssssssssssssssss:", sub.Endpoint)
 		Listner[sub.Id] = sub
 	}
 }
