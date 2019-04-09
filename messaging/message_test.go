@@ -573,6 +573,7 @@ var _ = Describe("Subscribe Updates", func() {
 	recorder := httptest.NewRecorder()
 	handler := http.HandlerFunc(SubscribeUpdate)
 	handler.ServeHTTP(recorder, req)
+	fmt.Println("recorder.Code :::", recorder.Code)
 
 	Describe("Subscribe", func() {
 		Context("Subscribe", func() {
@@ -581,22 +582,17 @@ var _ = Describe("Subscribe Updates", func() {
 			})
 		})
 	})
-})
 
-//Unsubscribe
-var _ = Describe("Unsubscribe Update", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-	os.Setenv("BOT_TOKEN", botToken)
 	id := "1"
-	requestBody := new(bytes.Buffer)
+	requestBody1 := new(bytes.Buffer)
 	json.NewEncoder(requestBody).Encode(id)
-	req, err := http.NewRequest("POST", "/unsubscribe", requestBody)
+	req1, err := http.NewRequest("POST", "/unsubscribe", requestBody1)
 	if err != nil {
 		log.Fatal(err)
 	}
-	recorder := httptest.NewRecorder()
-	handler := http.HandlerFunc(UnsubscribeUpdate)
-	handler.ServeHTTP(recorder, req)
+	recorder1 := httptest.NewRecorder()
+	handler1 := http.HandlerFunc(UnsubscribeUpdate)
+	handler1.ServeHTTP(recorder1, req1)
 
 	Describe("Unsubscribe", func() {
 		Context("Unsubscribe", func() {
@@ -726,3 +722,27 @@ var _ = Describe("Test Leave Chat with Invalid token", func() {
 	})
 
 })
+
+// //Unsubscribe
+// var _ = Describe("Unsubscribe Update", func() {
+// 	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+// 	os.Setenv("BOT_TOKEN", botToken)
+// 	id := "1"
+// 	requestBody := new(bytes.Buffer)
+// 	json.NewEncoder(requestBody).Encode(id)
+// 	req, err := http.NewRequest("POST", "/unsubscribe", requestBody)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	recorder := httptest.NewRecorder()
+// 	handler := http.HandlerFunc(UnsubscribeUpdate)
+// 	handler.ServeHTTP(recorder, req)
+
+// 	Describe("Unsubscribe", func() {
+// 		Context("Unsubscribe", func() {
+// 			It("Should result http.StatusOK", func() {
+// 				Expect(http.StatusOK).To(Equal(recorder.Code))
+// 			})
+// 		})
+// 	})
+// })

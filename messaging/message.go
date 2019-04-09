@@ -255,8 +255,7 @@ func SendPhoto(responseWriter http.ResponseWriter, request *http.Request) {
 
 //Subscribe
 func SubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request) {
-	res1, _ := json.Marshal(request.Body)
-	fmt.Println("request.Body,............. ::", res1)
+
 	isBotRunning := false
 
 	if !isBotRunning {
@@ -358,10 +357,8 @@ func getMessageUpdates(userid string, sub Subscribe) {
 
 	requestBody := new(b.Buffer)
 	json.NewEncoder(requestBody).Encode(response)
-	dsaas, _ := json.Marshal(response)
+
 	if newMsg.UpdateID != sub.Offset && newMsg.ChannelPost.Chat.UserName == sub.Data.Channel {
-		fmt.Println("dsaas :", string(dsaas))
-		fmt.Println("Endpoint :", sub.Endpoint)
 
 		req, errr := http.NewRequest("POST", sub.Endpoint, requestBody)
 		if errr != nil {
@@ -371,7 +368,7 @@ func getMessageUpdates(userid string, sub Subscribe) {
 		if newMsg.UpdateID > sub.Offset {
 			sub.Offset = newMsg.UpdateID
 		}
-		fmt.Println("ssssssssssssssssssssssssssssssssssssss:", sub.Endpoint)
+
 		Listner[sub.Id] = sub
 	}
 }
