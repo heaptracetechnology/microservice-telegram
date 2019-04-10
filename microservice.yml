@@ -52,7 +52,7 @@ actions:
               help: The message payload returned by telegram
               type: object
   set_webhook:
-    help: Set webhook to recieve message streaming
+    help: Set webhook to receive message streaming
     arguments:
       url:
         type: string
