@@ -59,7 +59,6 @@ var bot *tgbotapi.BotAPI
 //Get Bot Details
 func GetBotDetails(responseWriter http.ResponseWriter, request *http.Request) {
 
-	responseWriter.Header().Set("Content-Type", "application/json")
 	var botToken = os.Getenv("BOT_TOKEN")
 
 	bot, err := tgbotapi.NewBotAPI(botToken)
@@ -77,7 +76,6 @@ func GetBotDetails(responseWriter http.ResponseWriter, request *http.Request) {
 //Send Message By Bot
 func SendMessage(responseWriter http.ResponseWriter, request *http.Request) {
 
-	responseWriter.Header().Set("Content-Type", "application/json")
 	var botToken = os.Getenv("BOT_TOKEN")
 
 	bot, err := tgbotapi.NewBotAPI(botToken)
@@ -108,7 +106,6 @@ func SendMessage(responseWriter http.ResponseWriter, request *http.Request) {
 //Send Channel Message By Bot
 func SendChannelMessage(responseWriter http.ResponseWriter, request *http.Request) {
 
-	responseWriter.Header().Set("Content-Type", "application/json")
 	var botToken = os.Getenv("BOT_TOKEN")
 
 	bot, err := tgbotapi.NewBotAPI(botToken)
@@ -139,7 +136,6 @@ func SendChannelMessage(responseWriter http.ResponseWriter, request *http.Reques
 //Get Chat
 func GetChat(responseWriter http.ResponseWriter, request *http.Request) {
 
-	responseWriter.Header().Set("Content-Type", "application/json")
 	var botToken = os.Getenv("BOT_TOKEN")
 
 	bot, err := tgbotapi.NewBotAPI(botToken)
@@ -172,7 +168,6 @@ func GetChat(responseWriter http.ResponseWriter, request *http.Request) {
 //Leave Chat
 func LeaveChat(responseWriter http.ResponseWriter, request *http.Request) {
 
-	responseWriter.Header().Set("Content-Type", "application/json")
 	var botToken = os.Getenv("BOT_TOKEN")
 
 	bot, err := tgbotapi.NewBotAPI(botToken)
@@ -205,7 +200,6 @@ func LeaveChat(responseWriter http.ResponseWriter, request *http.Request) {
 //Send Photo
 func SendPhoto(responseWriter http.ResponseWriter, request *http.Request) {
 
-	responseWriter.Header().Set("Content-Type", "application/json")
 	var botToken = os.Getenv("BOT_TOKEN")
 
 	bot, err := tgbotapi.NewBotAPI(botToken)
@@ -264,7 +258,6 @@ func SendPhoto(responseWriter http.ResponseWriter, request *http.Request) {
 //Subscribe
 func SubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request) {
 
-	responseWriter.Header().Set("Content-Type", "application/json")
 	if !isBotRunning {
 		var botToken = os.Getenv("BOT_TOKEN")
 		bot, _ = tgbotapi.NewBotAPI(botToken)
@@ -296,7 +289,6 @@ func SubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request) 
 //Unsubscribe
 func UnsubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request) {
 
-	responseWriter.Header().Set("Content-Type", "application/json")
 	decoder := json.NewDecoder(request.Body)
 	var id string
 	err := decoder.Decode(&id)
@@ -345,8 +337,6 @@ func getMessageUpdates(userid string, sub Subscribe) {
 	if updateErr != nil {
 		fmt.Println("updateErr :", updateErr)
 	}
-
-	//var messages []tgbotapi.Update
 
 	var messages = getUpdates
 	var newMsg tgbotapi.Update
