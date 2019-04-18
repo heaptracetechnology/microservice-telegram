@@ -1,17 +1,20 @@
 package messaging
 
 import (
-	b "bytes"
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net/http"
-	"os"
-	"time"
-
+	"github.com/cloudevents/sdk-go"
 	result "github.com/heaptracetechnology/microservice-telegram/result"
 	tgbotapi "gopkg.in/telegram-bot-api.v4"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"net/url"
+	"os"
+	"strings"
+	"time"
 )
 
 type BotMessage struct {
@@ -34,25 +37,8 @@ type Data struct {
 	Channel string `json:"channel"`
 }
 
-type UpdateResponse struct {
-	UpdateId string `json:"update_id"`
-	Channel  string `json:"channel"`
-	Id       string `json:"id"`
-	Pattern  string `json:"pattern"`
-	Direct   string `json:"direct"`
-}
-
-type Payload struct {
-	EventId     string          `json:"eventID"`
-	EventType   string          `json:"eventType"`
-	ContentType string          `json:"contentType"`
-	Data        tgbotapi.Update `json:"data"`
-}
-
 var Listner = make(map[string]Subscribe)
 var rtmstarted bool
-
-//var offset string
 var isBotRunning bool
 var bot *tgbotapi.BotAPI
 
@@ -273,9 +259,6 @@ func SubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request) 
 		return
 	}
 
-	res2, _ := json.Marshal(listner)
-	fmt.Println(string(res2))
-
 	Listner[listner.Id] = listner
 	if !rtmstarted {
 		go TeleGramRTM()
@@ -327,7 +310,6 @@ func TeleGramRTM() {
 
 func getMessageUpdates(userid string, sub Subscribe) {
 
-	hc := http.Client{}
 	var param tgbotapi.UpdateConfig
 	if sub.Offset > 0 {
 		param.Offset = sub.Offset
@@ -343,36 +325,63 @@ func getMessageUpdates(userid string, sub Subscribe) {
 
 	for _, msg := range messages {
 		newMsg = msg
-
 	}
 
-	var response Payload
-
-	response.ContentType = "application" + "/" + "json"
-	response.EventType = "hears"
-	response.EventId = sub.Id
-	response.Data = newMsg
-
-	requestBody := new(b.Buffer)
-	err := json.NewEncoder(requestBody).Encode(response)
+	contentType := "application/json"
+	s1 := strings.Split(sub.Endpoint, "//")
+	_, ip := s1[0], s1[1]
+	s := strings.Split(ip, ":")
+	_, port := s[0], s[1]
+	sub.Endpoint = "http://192.168.0.61:" + string(port)
+	t, err := cloudevents.NewHTTPTransport(
+		cloudevents.WithTarget(sub.Endpoint),
+		cloudevents.WithStructuredEncoding(),
+	)
 	if err != nil {
-		fmt.Println(" request err :", err)
+		log.Printf("failed to create transport, %v", err)
+		return
+	}
+
+	c, err := cloudevents.NewClient(t,
+		cloudevents.WithTimeNow(),
+	)
+	if err != nil {
+		log.Printf("failed to create client, %v", err)
+		return
+	}
+
+	source, err := url.Parse(sub.Endpoint)
+	event := cloudevents.Event{
+		Context: cloudevents.EventContextV01{
+			EventID:     sub.Id,
+			EventType:   "hears",
+			Source:      cloudevents.URLRef{URL: *source},
+			ContentType: &contentType,
+		}.AsV01(),
+		Data: newMsg,
 	}
 
 	if newMsg.UpdateID != sub.Offset && newMsg.ChannelPost.Chat.UserName == sub.Data.Channel {
 
-		req, errr := http.NewRequest("POST", sub.Endpoint, requestBody)
-		if errr != nil {
-			fmt.Println(" request err :", errr)
-		}
-		_, err := hc.Do(req)
+		resp, err := c.Send(context.Background(), event)
 		if err != nil {
-			fmt.Println("Client error", err)
+			log.Printf("failed to send: %v", err)
+		}
+		if resp != nil {
+			fmt.Printf("Response:\n%s\n", resp)
+			fmt.Printf("Got Event Response Context: %+v\n", resp.Context)
+			data := event
+			if err := resp.DataAs(event); err != nil {
+				fmt.Printf("Got Data Error: %s\n", err.Error())
+			}
+			fmt.Printf("Got Response Data: %+v\n", data)
+		} else {
+			log.Printf("event sent at %s", time.Now())
 		}
 		if newMsg.UpdateID > sub.Offset {
 			sub.Offset = newMsg.UpdateID
 		}
-
 		Listner[sub.Id] = sub
 	}
+
 }

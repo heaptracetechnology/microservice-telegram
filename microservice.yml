@@ -39,18 +39,15 @@ actions:
           contentType: application/json
           type: object
           properties:
-            event_type:
-              help: The type of event called
+            update_id:
+              help: The update ID of new message
               type: string
-            content_type:
-              help: The content type of method
-              type: string
-            event_id:
-              help: The event ID
-              type: string
-            data:
-              help: The message payload returned by telegram
+            channel_post:
+              help: The object of channel post with message ID, channel name etc.
               type: object
+            text:
+              help: The text message from channel
+              type: string
   set_webhook:
     help: Set webhook to receive message streaming
     arguments:
