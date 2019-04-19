@@ -13,7 +13,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"strings"
 	"time"
 )
 
@@ -327,15 +326,7 @@ func getMessageUpdates(userid string, sub Subscribe) {
 		newMsg = msg
 	}
 
-	check := sub.IsTesting
-	fmt.Println("check ::", check)
-
 	contentType := "application/json"
-	s1 := strings.Split(sub.Endpoint, "//")
-	_, ip := s1[0], s1[1]
-	s := strings.Split(ip, ":")
-	_, port := s[0], s[1]
-	sub.Endpoint = "http://192.168.0.61:" + string(port)
 	t, err := cloudevents.NewHTTPTransport(
 		cloudevents.WithTarget(sub.Endpoint),
 		cloudevents.WithStructuredEncoding(),
