@@ -327,6 +327,9 @@ func getMessageUpdates(userid string, sub Subscribe) {
 		newMsg = msg
 	}
 
+	check := sub.IsTesting
+	fmt.Println("check ::", check)
+
 	contentType := "application/json"
 	s1 := strings.Split(sub.Endpoint, "//")
 	_, ip := s1[0], s1[1]
