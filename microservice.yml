@@ -48,35 +48,6 @@ actions:
             text:
               help: The text message from channel
               type: string
-  # get_updates:
-  #   help: get updates of telegram messages
-  #   http:
-  #     port: 3000
-  #     method: post
-  #     path: /getupdates
-  #     contentType: application/json
-  #   output:
-  #     type: object
-  #     contentType: application/json
-  #     properties:
-  #       ok:
-  #         help: It return boolean value
-  #         type: boolean
-  #       result:
-  #         help: It return boolean value
-  #         type: boolean
-  #       error_code:
-  #         help: The error code
-  #         type: int
-  #       description:
-  #         help: The description of operation
-  #         type: string
-  #       username:
-  #         help: The bot username
-  #         type: string
-  #       is_bot:
-  #         help: The boolean value as true/false
-  #         type: boolean
   get_bot:
     help: Get object with bot details
     http:
