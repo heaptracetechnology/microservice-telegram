@@ -24,6 +24,10 @@ omg build
 
 ### CLI
 
+##### Subscribe
+```sh
+$ omg subscribe bot hears -a channel=<CHANNEL_USERNAME> -e BOT_TOKEN=<BOT_TOKEN>
+```
 ##### Get Bot Details
 ```sh
 $ omg run get_bot -e BOT_TOKEN=<BOT_TOKEN>
@@ -55,14 +59,7 @@ $ omg run leave_chat -a chat_id=<CHAT_ID> -e BOT_TOKEN=<BOT_TOKEN>
 $ omg run send_photo -a chat_id=<CHAT_ID> -a image=<BASE64_DATA> -e BOT_TOKEN=<BOT_TOKEN>
 ```
 NOTE : Use "-" as prefix in ChatID for group(chat_id = "-12345678") else for user (chat_id = "12345678")
-##### Subscribe
-```sh
-$ omg subscribe bot hears -a channel=<CHANNEL_USERNAME> -e BOT_TOKEN=<BOT_TOKEN>
-```
-##### Unsubscribe
-```sh
-$ omg unsubscribe bot hears -a id=<ID> -e BOT_TOKEN=<BOT_TOKEN>
-```
+
 ## License
 ### [MIT](https://choosealicense.com/licenses/mit/)
 

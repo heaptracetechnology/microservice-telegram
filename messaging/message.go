@@ -36,7 +36,7 @@ type Data struct {
 	Channel string `json:"channel"`
 }
 
-var Listner = make(map[string]Subscribe)
+var Listener = make(map[string]Subscribe)
 var rtmstarted bool
 var isBotRunning bool
 var bot *tgbotapi.BotAPI
@@ -231,12 +231,12 @@ func SendPhoto(responseWriter http.ResponseWriter, request *http.Request) {
 	}
 
 	uploadphoto := tgbotapi.NewPhotoUpload(botMessage.ChatID, filepath)
-	reponse, errr := bot.Send(uploadphoto)
-	if errr != nil {
-		result.WriteErrorResponse(responseWriter, errr)
+	response, respErr := bot.Send(uploadphoto)
+	if respErr != nil {
+		result.WriteErrorResponse(responseWriter, respErr)
 		return
 	}
-	bytes, _ := json.Marshal(reponse)
+	bytes, _ := json.Marshal(response)
 	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
 }
 
@@ -251,14 +251,14 @@ func SubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request) 
 
 	decoder := json.NewDecoder(request.Body)
 
-	var listner Subscribe
-	errr := decoder.Decode(&listner)
+	var listener Subscribe
+	errr := decoder.Decode(&listener)
 	if errr != nil {
 		result.WriteErrorResponse(responseWriter, errr)
 		return
 	}
 
-	Listner[listner.Id] = listner
+	Listener[listener.Id] = listener
 	if !rtmstarted {
 		go TeleGramRTM()
 		rtmstarted = true
@@ -278,8 +278,8 @@ func UnsubscribeUpdate(responseWriter http.ResponseWriter, request *http.Request
 		result.WriteErrorResponse(responseWriter, err)
 		return
 	}
-	if len(Listner) > 0 {
-		delete(Listner, id)
+	if len(Listener) > 0 {
+		delete(Listener, id)
 	}
 
 	bytes, _ := json.Marshal("UnSubscribed")
@@ -290,8 +290,8 @@ func TeleGramRTM() {
 	istest := false
 	quit := make(chan struct{})
 	for {
-		if len(Listner) > 0 {
-			for k, v := range Listner {
+		if len(Listener) > 0 {
+			for k, v := range Listener {
 				go getMessageUpdates(k, v)
 				istest = v.IsTesting
 			}
@@ -375,7 +375,7 @@ func getMessageUpdates(userid string, sub Subscribe) {
 		if newMsg.UpdateID > sub.Offset {
 			sub.Offset = newMsg.UpdateID
 		}
-		Listner[sub.Id] = sub
+		Listener[sub.Id] = sub
 	}
 
 }
