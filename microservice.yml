@@ -48,7 +48,7 @@ actions:
             text:
               help: The text message from channel
               type: string
-  get_bot:
+  getBot:
     help: Get object with bot details
     http:
       port: 3000
@@ -82,7 +82,7 @@ actions:
       path: /send
       contentType: application/json
     arguments:
-      chat_id:
+      chatId:
         type: int
         in: requestBody
         required: true
@@ -108,7 +108,7 @@ actions:
         text:
           help: The message text
           type: string
-  channel_message:
+  channelMessage:
     help: Send message to channel from bot
     http:
       port: 3000
@@ -139,7 +139,7 @@ actions:
         text:
           help: The text message
           type: string
-  get_chat:
+  getChat:
     help: Get object with chat details
     http:
       port: 3000
@@ -147,7 +147,7 @@ actions:
       path: /getchat
       contentType: application/json
     arguments:
-      chat_id:
+      chatId:
         type: int
         in: requestBody
         required: true
@@ -171,7 +171,7 @@ actions:
         is_bot:
           help: The boolean value as true/false
           type: boolean
-  leave_chat:
+  leaveChat:
     help: Leave group using chat ID
     http:
       port: 3000
@@ -179,7 +179,7 @@ actions:
       path: /leavechat
       contentType: application/json
     arguments:
-      chat_id:
+      chatId:
         type: int
         in: requestBody
         required: true
@@ -197,7 +197,7 @@ actions:
         error_code:
           help: The error code
           type: int
-  send_photo:
+  sendPhoto:
     help: Send photo to group by bot
     http:
       port: 3000
@@ -205,7 +205,7 @@ actions:
       path: /sendphoto
       contentType: application/json
     arguments:
-      chat_id:
+      chatId:
         type: int
         in: requestBody
         required: false

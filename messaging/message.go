@@ -17,7 +17,7 @@ import (
 )
 
 type BotMessage struct {
-	ChatID      int64  `json:"chat_id"`
+	ChatID      int64  `json:"chatId"`
 	Message     string `json:"message"`
 	Username    string `json:"username"`
 	ImageBase64 string `json:"image"`
