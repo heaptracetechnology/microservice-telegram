@@ -11,22 +11,27 @@ An OMG service for Telegram, is a cloud-based instant messaging service.
 ##### Get Bot Details
 ```coffee
 >>> telegram getBot
+{"id": "botID","first_name": "botName","username": "botUsername","is_bot": true}
 ```
 ##### Send Message TO Group/User
 ```coffee
 >>> telegram send chatId:'chatID' message:'messageText'
+{"message_id":"messageId" ,"from": {"senderDetails"},"date": 1561134990,"chat": {"chatDetails"}}
 ```
 ##### Send Bot Channel Message
 ```coffee
 >>> telegram channelMessage username:'username' message:'messageText'
+{"message_id":"messageId" ,"from": {"senderDetails"},"date": 1561134990,"chat": {"chatDetails"}}
 ```
 ##### Get Chat
 ```coffee
 >>> telegram getChat chatId:'chatID'
+{"id": "chatID","type": "group","title": "groupTitle","all_members_are_administrators": true,"photo": null}
 ```
 ##### Leave Chat
 ```coffee
 >>> telegram leaveChat chatId:'chatID'
+{"ok": true,"result": true,"error_code": 0,"description": "ifAny","parameters": null}
 ```
 ##### Send Photo
 ```coffee
