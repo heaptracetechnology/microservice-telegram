@@ -1,74 +1,86 @@
-# Telegram as a microservice
+# _Telegram_ OMG Microservice
+
+[![Open Microservice Guide](https://img.shields.io/badge/OMG%20Enabled-👍-green.svg?)](https://microservice.guide)
+[![Build Status](https://travis-ci.org/omg-services/telegram.svg?branch=master)](https://travis-ci.org/omg-services/telegram)
+[![codecov](https://codecov.io/gh/omg-services/telegram/branch/master/graph/badge.svg)](https://codecov.io/gh/omg-services/telegram)
+
+
 An OMG service for Telegram, is a cloud-based instant messaging service.
 
-[![Open Microservice Guide](https://img.shields.io/badge/OMG-enabled-brightgreen.svg?style=for-the-badge)](https://microservice.guide)
-[![Build Status](https://travis-ci.org/heaptracetechnology/microservice-telegram.svg?branch=master)](https://travis-ci.org/heaptracetechnology/microservice-telegram)
-[![codecov](https://codecov.io/gh/heaptracetechnology/microservice-telegram/branch/master/graph/badge.svg)](https://codecov.io/gh/heaptracetechnology/microservice-telegram)
+## Direct usage in [Storyscript](https://storyscript.io/):
 
-
-## [OMG](hhttps://microservice.guide) CLI
-
-### OMG
-
-* omg validate
-```
-omg validate
-```
-* omg build
-```
-omg build
-```
-### Test Service
-
-* Test the service by following OMG commands
-
-### CLI
-
-##### Subscribe
-```sh
-$ omg subscribe bot hears -a channel=<CHANNEL_USERNAME> -e BOT_TOKEN=<BOT_TOKEN>
-```
 ##### Get Bot Details
-```sh
-$ omg run get_bot -e BOT_TOKEN=<BOT_TOKEN>
+```coffee
+>>> telegram getBot
+{"id": "botID","first_name": "botName","username": "botUsername","is_bot": true}
 ```
 ##### Send Message TO Group/User
-```sh
-$ omg run send -a chat_id=<CHAT_ID> -a message=<MESSAGE> -e BOT_TOKEN=<BOT_TOKEN>
+```coffee
+>>> telegram send chatId:'chatID' message:'messageText'
+{"message_id":"messageId" ,"from": {"senderDetails"},"date": 1561134990,"chat": {"chatDetails"}}
 ```
-NOTE : Use "-" as prefix in ChatID for group(chat_id = "-12345678") else for user (chat_id = "12345678")
-
 ##### Send Bot Channel Message
-```sh
-$ omg run channel_message -a username=<USERNAME> -a message=<MESSAGE> -e BOT_TOKEN=<BOT_TOKEN>
-```
-##### Send Bot Channel Message (EXAMPLE)
-```sh
-$ omg run channel_message -a username="@firstchannel" -a message="Hello World" -e BOT_TOKEN=<BOT_TOKEN>
+```coffee
+>>> telegram channelMessage username:'username' message:'messageText'
+{"message_id":"messageId" ,"from": {"senderDetails"},"date": 1561134990,"chat": {"chatDetails"}}
 ```
 ##### Get Chat
-```sh
-$ omg run get_chat -a chat_id=<CHAT_ID> -e BOT_TOKEN=<BOT_TOKEN>
+```coffee
+>>> telegram getChat chatId:'chatID'
+{"id": "chatID","type": "group","title": "groupTitle","all_members_are_administrators": true,"photo": null}
 ```
 ##### Leave Chat
-```sh
-$ omg run leave_chat -a chat_id=<CHAT_ID> -e BOT_TOKEN=<BOT_TOKEN>
+```coffee
+>>> telegram leaveChat chatId:'chatID'
+{"ok": true,"result": true,"error_code": 0,"description": "ifAny","parameters": null}
 ```
 ##### Send Photo
-```sh
-$ omg run send_photo -a chat_id=<CHAT_ID> -a image=<BASE64_DATA> -e BOT_TOKEN=<BOT_TOKEN>
+```coffee
+>>> telegram sendPhoto chatId:'chatID' image:'Base64 Data'
 ```
-NOTE : Use "-" as prefix in ChatID for group(chat_id = "-12345678") else for user (chat_id = "12345678")
+
+Curious to [learn more](https://docs.storyscript.io/)?
+
+✨🍰✨
+
+## Usage with [OMG CLI](https://www.npmjs.com/package/omg)
+
+**Note** : Use "-" as prefix in ChatID for group(chat_id = "-12345678") else for user (chat_id = "12345678")
+
+##### Get Bot Details
+```shell
+$ omg run getBot -e BOT_TOKEN=<BOT_TOKEN>
+```
+##### Send Message TO Group/User
+```shell
+$ omg run send -a chatId=<CHAT_ID> -a message=<MESSAGE> -e BOT_TOKEN=<BOT_TOKEN>
+```
+##### Send Bot Channel Message
+```shell
+$ omg run channelMessage -a username=<USERNAME> -a message=<MESSAGE> -e BOT_TOKEN=<BOT_TOKEN>
+```
+##### Send Bot Channel Message (EXAMPLE)
+```shell
+$ omg run channelMessage -a username="@firstchannel" -a message="Hello World" -e BOT_TOKEN=<BOT_TOKEN>
+```
+##### Get Chat
+```shell
+$ omg run getChat -a chatId=<CHAT_ID> -e BOT_TOKEN=<BOT_TOKEN>
+```
+##### Leave Chat
+```shell
+$ omg run leaveChat -a chatId=<CHAT_ID> -e BOT_TOKEN=<BOT_TOKEN>
+```
+##### Send Photo
+```shell
+$ omg run sendPhoto -a chatId=<CHAT_ID> -a image=<BASE64_DATA> -e BOT_TOKEN=<BOT_TOKEN>
+```
+##### Subscribe
+```shell
+$ omg subscribe bot hears -a channel=<CHANNEL_USERNAME> -e BOT_TOKEN=<BOT_TOKEN>
+```
+
+**Note**: The OMG CLI requires [Docker](https://docs.docker.com/install/) to be installed.
 
 ## License
-### [MIT](https://choosealicense.com/licenses/mit/)
-
-## Docker
-### Build
-```
-docker build -t microservice-telegram .
-```
-### RUN
-```
-docker run -p 3000:3000 microservice-telegram
-```
+[MIT License](https://github.com/omg-services/telegram/blob/master/LICENSE).

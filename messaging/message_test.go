@@ -5,16 +5,25 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
-
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	"strconv"
 )
+
+var (
+	botToken    = os.Getenv("TELEGRAM_BOT_TOKEN")
+	chatID      = os.Getenv("TELEGRAM_CHAT_ID")
+	username    = os.Getenv("TELEGRAM_Username")
+	channelName = os.Getenv("TELEGRAM_Channel_Name")
+)
+
+var int64ChatID, _ = strconv.ParseInt(chatID, 10, 64)
 
 //Base64 encoder
 func Encodebase64(path string) (string, error) {
@@ -27,7 +36,7 @@ func Encodebase64(path string) (string, error) {
 
 //Test get bot details with the valid data
 var _ = Describe("Test get bot details with the valid data", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+
 	os.Setenv("BOT_TOKEN", botToken)
 	req, err := http.NewRequest("GET", "/getbot", nil)
 	if err != nil {
@@ -70,9 +79,9 @@ var _ = Describe("Test get bot details with the invalid token", func() {
 
 //Test bot send message
 var _ = Describe("Test send bot message with valid data", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+
 	os.Setenv("BOT_TOKEN", botToken)
-	botMessage := BotMessage{ChatID: -349280204, Message: "Test bot send message"}
+	botMessage := BotMessage{ChatID: int64ChatID, Message: "Test bot send message"}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
 	if err != nil {
@@ -106,7 +115,7 @@ var _ = Describe("Test send bot message with valid data", func() {
 
 //Test bot send message invalid chatid
 var _ = Describe("Test send bot message with invalid chatid", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+
 	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := BotMessage{ChatID: -1234, Message: "Test bot send message invalid chatid"}
 	requestBody := new(bytes.Buffer)
@@ -134,7 +143,7 @@ var _ = Describe("Test send bot message with invalid chatid", func() {
 
 //Test bot send message invalid message type
 var _ = Describe("Test send bot message with empty message", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+
 	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := []byte(`{"status":false}`)
 	requestBody := new(bytes.Buffer)
@@ -164,7 +173,7 @@ var _ = Describe("Test send bot message with empty message", func() {
 var _ = Describe("Test send bot message with Invalid Token", func() {
 	botToken := "754194684:A"
 	os.Setenv("BOT_TOKEN", botToken)
-	botMessage := BotMessage{ChatID: -349280204, Message: "Test bot send message"}
+	botMessage := BotMessage{ChatID: int64ChatID, Message: "Test bot send message"}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
 	if err != nil {
@@ -190,9 +199,9 @@ var _ = Describe("Test send bot message with Invalid Token", func() {
 
 //Test bot send message to channel
 var _ = Describe("Test send bot channel message with valid data", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+
 	os.Setenv("BOT_TOKEN", botToken)
-	botMessage := BotMessage{Username: "@firstchannellink", Message: "Test send bot channel message"}
+	botMessage := BotMessage{Username: username, Message: "Test send bot channel message"}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
 	if err != nil {
@@ -218,7 +227,7 @@ var _ = Describe("Test send bot channel message with valid data", func() {
 
 //Test bot send channel message
 var _ = Describe("Test send bot channel message with Invalid username", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+
 	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := BotMessage{ChatID: 123, Message: "Test send bot channel message"}
 	requestBody := new(bytes.Buffer)
@@ -246,7 +255,7 @@ var _ = Describe("Test send bot channel message with Invalid username", func() {
 
 //Test bot send channel message
 var _ = Describe("Test send bot channel message with Invalid data", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+
 	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := []byte(`{"status":false}`)
 	requestBody := new(bytes.Buffer)
@@ -276,7 +285,7 @@ var _ = Describe("Test send bot channel message with Invalid data", func() {
 var _ = Describe("Test send bot channel message with Invalid token", func() {
 	botToken := "754194684:A"
 	os.Setenv("BOT_TOKEN", botToken)
-	botMessage := BotMessage{Username: "@firstchannellink", Message: "Test send bot channel message"}
+	botMessage := BotMessage{Username: username, Message: "Test send bot channel message"}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
 	if err != nil {
@@ -302,9 +311,9 @@ var _ = Describe("Test send bot channel message with Invalid token", func() {
 
 //Test GetChat
 var _ = Describe("Test GetChat with valid data", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+
 	os.Setenv("BOT_TOKEN", botToken)
-	botMessage := BotMessage{ChatID: -349280204}
+	botMessage := BotMessage{ChatID: int64ChatID}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
 	if err != nil {
@@ -330,9 +339,9 @@ var _ = Describe("Test GetChat with valid data", func() {
 
 //Test GetChat
 var _ = Describe("Test GetChat with Invalid Chat_Id", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+
 	os.Setenv("BOT_TOKEN", botToken)
-	botMessage := BotMessage{ChatID: -34928020}
+	botMessage := BotMessage{ChatID: -3492802022}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
 	if err != nil {
@@ -358,7 +367,7 @@ var _ = Describe("Test GetChat with Invalid Chat_Id", func() {
 
 //Test GetChat
 var _ = Describe("Test GetChat with Invalid data", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+
 	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := []byte(`{"status":false}`)
 	requestBody := new(bytes.Buffer)
@@ -414,7 +423,7 @@ var _ = Describe("Test GetChat with Invalid token", func() {
 
 //Test Send Photo
 var _ = Describe("Test send photo with valid data", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+
 	os.Setenv("BOT_TOKEN", botToken)
 
 	filepath, _ := filepath.Abs("../testImage/dice.jpeg")
@@ -423,7 +432,7 @@ var _ = Describe("Test send photo with valid data", func() {
 		fmt.Println("===base64 err======", base64Err)
 	}
 
-	botMessage := BotMessage{ChatID: -349280204, ImageBase64: base64Data}
+	botMessage := BotMessage{ChatID: int64ChatID, ImageBase64: base64Data}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
 	if err != nil {
@@ -456,7 +465,7 @@ var _ = Describe("Test send photo with valid data", func() {
 
 //Test Send Photo
 var _ = Describe("Test send photo with Invalid Chat_Id", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+
 	os.Setenv("BOT_TOKEN", botToken)
 
 	filepath, _ := filepath.Abs("../testImage/dice.jpeg")
@@ -491,7 +500,7 @@ var _ = Describe("Test send photo with Invalid Chat_Id", func() {
 
 //Test Send Photo
 var _ = Describe("Test send photo with Invalid data", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+
 	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := []byte(`{"status":false}`)
 	requestBody := new(bytes.Buffer)
@@ -528,7 +537,7 @@ var _ = Describe("Test send photo with Invalid token", func() {
 		fmt.Println("===base64 err======", base64Err)
 	}
 
-	botMessage := BotMessage{ChatID: -349280204, Username: base64Data}
+	botMessage := BotMessage{ChatID: int64ChatID, ImageBase64: base64Data}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
 	if err != nil {
@@ -554,10 +563,10 @@ var _ = Describe("Test send photo with Invalid token", func() {
 
 //Subscribe
 var _ = Describe("Subscribe Updates", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+
 	os.Setenv("BOT_TOKEN", botToken)
 	data := Data{
-		Channel: "channeltest02",
+		Channel: channelName,
 	}
 	botMessage := Subscribe{Endpoint: "https://webhook.site/3cee781d-0a87-4966-bdec-9635436294e9",
 		Id:        "1",
@@ -588,9 +597,9 @@ var _ = Describe("Subscribe Updates", func() {
 
 //Test Leave Chat
 var _ = Describe("Test Leave Chat with valid data", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+
 	os.Setenv("BOT_TOKEN", botToken)
-	botMessage := BotMessage{ChatID: -34928020}
+	botMessage := BotMessage{ChatID: int64ChatID}
 	requestBody := new(bytes.Buffer)
 	err := json.NewEncoder(requestBody).Encode(botMessage)
 	if err != nil {
@@ -623,7 +632,7 @@ var _ = Describe("Test Leave Chat with valid data", func() {
 
 //Test Leave Chat
 var _ = Describe("Test Leave Chat with Invalid Chat_Id", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+
 	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := BotMessage{ChatID: -349}
 	requestBody := new(bytes.Buffer)
@@ -652,7 +661,7 @@ var _ = Describe("Test Leave Chat with Invalid Chat_Id", func() {
 
 //Test Leave Chat
 var _ = Describe("Test Leave Chat with Invalid data", func() {
-	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
+
 	os.Setenv("BOT_TOKEN", botToken)
 	botMessage := []byte(`{"status":false}`)
 	requestBody := new(bytes.Buffer)
@@ -705,27 +714,3 @@ var _ = Describe("Test Leave Chat with Invalid token", func() {
 	})
 
 })
-
-// //Unsubscribe
-// var _ = Describe("Unsubscribe Update", func() {
-// 	botToken := "754194684:AAESS4D5lHbhOW8Gs4eBiO3ZNSfaCYl1tMA"
-// 	os.Setenv("BOT_TOKEN", botToken)
-// 	id := "1"
-// 	requestBody := new(bytes.Buffer)
-// 	json.NewEncoder(requestBody).Encode(id)
-// 	req, err := http.NewRequest("POST", "/unsubscribe", requestBody)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	recorder := httptest.NewRecorder()
-// 	handler := http.HandlerFunc(UnsubscribeUpdate)
-// 	handler.ServeHTTP(recorder, req)
-
-// 	Describe("Unsubscribe", func() {
-// 		Context("Unsubscribe", func() {
-// 			It("Should result http.StatusOK", func() {
-// 				Expect(http.StatusOK).To(Equal(recorder.Code))
-// 			})
-// 		})
-// 	})
-// })
