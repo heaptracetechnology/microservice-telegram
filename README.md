@@ -1,86 +1,162 @@
-# _Telegram_ OMG Microservice
+# _Telegram_ Open Microservice
 
-[![Open Microservice Guide](https://img.shields.io/badge/OMG%20Enabled-👍-green.svg?)](https://microservice.guide)
-[![Build Status](https://travis-ci.org/omg-services/telegram.svg?branch=master)](https://travis-ci.org/omg-services/telegram)
-[![codecov](https://codecov.io/gh/omg-services/telegram/branch/master/graph/badge.svg)](https://codecov.io/gh/omg-services/telegram)
+> This is a telegram service
 
+[![Open Microservice Specification Version](https://img.shields.io/badge/Open%20Microservice-1.0-477bf3.svg)](https://openmicroservices.org) [![Open Microservices Spectrum Chat](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/open-microservices) [![Open Microservices Code of Conduct](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](https://github.com/oms-services/.github/blob/master/CODE_OF_CONDUCT.md) [![Open Microservices Commitzen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com) 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-An OMG service for Telegram, is a cloud-based instant messaging service.
+## Introduction
 
-## Direct usage in [Storyscript](https://storyscript.io/):
+This project is an example implementation of the [Open Microservice Specification](https://openmicroservices.org), a standard originally created at [Storyscript](https://storyscript.io) for building highly-portable "microservices" that expose the events, actions, and APIs inside containerized software.
 
-##### Get Bot Details
-```coffee
->>> telegram getBot
-{"id": "botID","first_name": "botName","username": "botUsername","is_bot": true}
+## Getting Started
+
+The `oms` command-line interface allows you to interact with Open Microservices. If you're interested in creating an Open Microservice the CLI also helps validate, test, and debug your `oms.yml` implementation!
+
+See the [oms-cli](https://github.com/microservices/oms) project to learn more!
+
+### Installation
+
 ```
-##### Send Message TO Group/User
-```coffee
->>> telegram send chatId:'chatID' message:'messageText'
-{"message_id":"messageId" ,"from": {"senderDetails"},"date": 1561134990,"chat": {"chatDetails"}}
-```
-##### Send Bot Channel Message
-```coffee
->>> telegram channelMessage username:'username' message:'messageText'
-{"message_id":"messageId" ,"from": {"senderDetails"},"date": 1561134990,"chat": {"chatDetails"}}
-```
-##### Get Chat
-```coffee
->>> telegram getChat chatId:'chatID'
-{"id": "chatID","type": "group","title": "groupTitle","all_members_are_administrators": true,"photo": null}
-```
-##### Leave Chat
-```coffee
->>> telegram leaveChat chatId:'chatID'
-{"ok": true,"result": true,"error_code": 0,"description": "ifAny","parameters": null}
-```
-##### Send Photo
-```coffee
->>> telegram sendPhoto chatId:'chatID' image:'Base64 Data'
+npm install -g @microservices/oms
 ```
 
-Curious to [learn more](https://docs.storyscript.io/)?
+## Usage
 
-✨🍰✨
+### Open Microservices CLI Usage
 
-## Usage with [OMG CLI](https://www.npmjs.com/package/omg)
+Once you have the [oms-cli](https://github.com/microservices/oms) installed, you can run any of the following commands from within this project's root directory:
 
-**Note** : Use "-" as prefix in ChatID for group(chat_id = "-12345678") else for user (chat_id = "12345678")
+#### Actions
 
-##### Get Bot Details
-```shell
-$ omg run getBot -e BOT_TOKEN=<BOT_TOKEN>
-```
-##### Send Message TO Group/User
-```shell
-$ omg run send -a chatId=<CHAT_ID> -a message=<MESSAGE> -e BOT_TOKEN=<BOT_TOKEN>
-```
-##### Send Bot Channel Message
-```shell
-$ omg run channelMessage -a username=<USERNAME> -a message=<MESSAGE> -e BOT_TOKEN=<BOT_TOKEN>
-```
-##### Send Bot Channel Message (EXAMPLE)
-```shell
-$ omg run channelMessage -a username="@firstchannel" -a message="Hello World" -e BOT_TOKEN=<BOT_TOKEN>
-```
-##### Get Chat
-```shell
-$ omg run getChat -a chatId=<CHAT_ID> -e BOT_TOKEN=<BOT_TOKEN>
-```
-##### Leave Chat
-```shell
-$ omg run leaveChat -a chatId=<CHAT_ID> -e BOT_TOKEN=<BOT_TOKEN>
-```
-##### Send Photo
-```shell
-$ omg run sendPhoto -a chatId=<CHAT_ID> -a image=<BASE64_DATA> -e BOT_TOKEN=<BOT_TOKEN>
-```
-##### Subscribe
-```shell
-$ omg subscribe bot hears -a channel=<CHANNEL_USERNAME> -e BOT_TOKEN=<BOT_TOKEN>
+##### hears
+
+> Triggered anytime when any new message is posted in channel
+##### Action Arguments
+
+| Argument Name | Type | Required | Default | Description |
+|:------------- |:---- |:-------- |:--------|:----------- |
+| channel | `string` | `true` | None | The channel to subscribe |
+| BOT_TOKEN | `string` | `true` | None | Access token key for app |
+
+``` shell
+oms subscribe hears \ 
+    -a channel='*****' \ 
+    -e BOT_TOKEN=$BOT_TOKEN
 ```
 
-**Note**: The OMG CLI requires [Docker](https://docs.docker.com/install/) to be installed.
+##### getBot
 
-## License
-[MIT License](https://github.com/omg-services/telegram/blob/master/LICENSE).
+> Get object with bot details
+##### Action Arguments
+
+| Argument Name | Type | Required | Default | Description |
+|:------------- |:---- |:-------- |:--------|:----------- |
+| BOT_TOKEN | `string` | `true` | None | Access token key for app |
+
+``` shell
+oms run getBot \ 
+    -e BOT_TOKEN=$BOT_TOKEN
+```
+
+##### send
+
+> Send message from bot to group or user
+##### Action Arguments
+
+| Argument Name | Type | Required | Default | Description |
+|:------------- |:---- |:-------- |:--------|:----------- |
+| chatId | `int` | `true` | None | The chat id of group |
+| message | `string` | `true` | None | The text message to be send |
+| BOT_TOKEN | `string` | `true` | None | Access token key for app |
+
+``` shell
+oms run send \ 
+    -a chatId='*****' \ 
+    -a message='*****' \ 
+    -e BOT_TOKEN=$BOT_TOKEN
+```
+
+##### channelMessage
+
+> Send message to channel from bot
+##### Action Arguments
+
+| Argument Name | Type | Required | Default | Description |
+|:------------- |:---- |:-------- |:--------|:----------- |
+| username | `string` | `true` | None | The username of channel |
+| message | `string` | `true` | None | The text message to be send |
+| BOT_TOKEN | `string` | `true` | None | Access token key for app |
+
+``` shell
+oms run channelMessage \ 
+    -a username='*****' \ 
+    -a message='*****' \ 
+    -e BOT_TOKEN=$BOT_TOKEN
+```
+
+##### getChat
+
+> Get object with chat details
+##### Action Arguments
+
+| Argument Name | Type | Required | Default | Description |
+|:------------- |:---- |:-------- |:--------|:----------- |
+| chatId | `int` | `true` | None | The chat Id of telegram conversation |
+| BOT_TOKEN | `string` | `true` | None | Access token key for app |
+
+``` shell
+oms run getChat \ 
+    -a chatId='*****' \ 
+    -e BOT_TOKEN=$BOT_TOKEN
+```
+
+##### leaveChat
+
+> Leave group using chat ID
+##### Action Arguments
+
+| Argument Name | Type | Required | Default | Description |
+|:------------- |:---- |:-------- |:--------|:----------- |
+| chatId | `int` | `true` | None | The chat ID from where to leave bot |
+| BOT_TOKEN | `string` | `true` | None | Access token key for app |
+
+``` shell
+oms run leaveChat \ 
+    -a chatId='*****' \ 
+    -e BOT_TOKEN=$BOT_TOKEN
+```
+
+##### sendPhoto
+
+> Send photo to group by bot
+##### Action Arguments
+
+| Argument Name | Type | Required | Default | Description |
+|:------------- |:---- |:-------- |:--------|:----------- |
+| chatId | `int` | `false` | None | The chat ID where image is to be send |
+| image | `string` | `false` | None | The image base64 data. |
+| BOT_TOKEN | `string` | `true` | None | Access token key for app |
+
+``` shell
+oms run sendPhoto \ 
+    -a chatId='*****' \ 
+    -a image='*****' \ 
+    -e BOT_TOKEN=$BOT_TOKEN
+```
+
+## Contributing
+
+All suggestions in how to improve the specification and this guide are very welcome. Feel free share your thoughts in the Issue tracker, or even better, fork the repository to implement your own ideas and submit a pull request.
+
+[![Edit telegram on CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/oms-services/telegram)
+
+This project is guided by [Contributor Covenant](https://github.com/oms-services/.github/blob/master/CODE_OF_CONDUCT.md). Please read out full [Contribution Guidelines](https://github.com/oms-services/.github/blob/master/CONTRIBUTING.md).
+
+## Additional Resources
+
+* [Install the CLI](https://github.com/microservices/oms) - The OMS CLI helps developers create, test, validate, and build microservices.
+* [Example OMS Services](https://github.com/oms-services) - Examples of OMS-compliant services written in a variety of languages.
+* [Example Language Implementations](https://github.com/microservices) - Find tooling & language implementations in Node, Python, Scala, Java, Clojure.
+* [Storyscript Hub](https://hub.storyscript.io) - A public registry of OMS services.
+* [Community Chat](https://spectrum.chat/open-microservices) - Have ideas? Questions? Join us on Spectrum.

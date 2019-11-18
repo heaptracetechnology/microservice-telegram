@@ -97,10 +97,10 @@ actions:
           type: int
         from:
           help: The object with bot details.
-          type: object
+          type: map
         chat:
           help: The chat object with chat details.
-          type: object
+          type: map
         text:
           help: The message text
           type: string
@@ -131,7 +131,7 @@ actions:
           type: int
         chat:
           help: The chat object with details(ID, type, title,username)
-          type: object
+          type: map
         text:
           help: The text message
           type: string
@@ -220,13 +220,13 @@ actions:
           type: int
         from:
           help: The object of User.
-          type: object
+          type: map
         chat:
           help: The chat details
-          type: object
+          type: map
         photo:
           help: The object of Photo along with file Id.
-          type: object
+          type: map
 environment:
   BOT_TOKEN:
     type: string
