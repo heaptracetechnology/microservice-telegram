@@ -363,11 +363,11 @@ func getMessageUpdates(userid string, sub Subscribe) {
 		}
 		if resp != nil {
 			fmt.Printf("Response:\n%s\n", resp)
-			fmt.Printf("Got Event Response Context: %+v\n", resp.Context)
+			//fmt.Printf("Got Event Response Context: %+v\n", resp.Context)
 			data := event
-			if err := resp.DataAs(event); err != nil {
-				fmt.Printf("Got Data Error: %s\n", err.Error())
-			}
+			//if err := resp.DataAs(event); err != nil {
+			//	fmt.Printf("Got Data Error: %s\n", err.Error())
+			//}
 			fmt.Printf("Got Response Data: %+v\n", data)
 		} else {
 			log.Printf("event sent at %s", time.Now())
