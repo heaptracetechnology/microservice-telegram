@@ -6,12 +6,12 @@ RUN go get github.com/gorilla/mux
 
 RUN go get github.com/cloudevents/sdk-go
 
-WORKDIR /go/src/github.com/heaptracetechnology/microservice-telegram
+WORKDIR /go/src/github.com/oms-services/telegram
 
-ADD . /go/src/github.com/heaptracetechnology/microservice-telegram
+ADD . /go/src/github.com/oms-services/telegram
 
-RUN go install github.com/heaptracetechnology/microservice-telegram
+RUN go install github.com/oms-services/telegram
 
-ENTRYPOINT microservice-telegram
+ENTRYPOINT telegram
 
 EXPOSE 3000

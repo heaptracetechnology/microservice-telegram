@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cloudevents/sdk-go"
-	result "github.com/heaptracetechnology/microservice-telegram/result"
+	result "github.com/oms-services/telegram/result"
 	tgbotapi "gopkg.in/telegram-bot-api.v4"
 	"io/ioutil"
 	"log"
@@ -357,9 +357,9 @@ func getMessageUpdates(userid string, sub Subscribe) {
 
 	if newMsg.UpdateID != sub.Offset && newMsg.ChannelPost.Chat.UserName == sub.Data.Channel {
 
-		resp, err := c.Send(context.Background(), event)
+		resp, evt, err := c.Send(context.Background(), event)
 		if err != nil {
-			log.Printf("failed to send: %v", err)
+			log.Printf("failed to send: %v (%v)", err, evt)
 		}
 		if resp != nil {
 			fmt.Printf("Response:\n%s\n", resp)

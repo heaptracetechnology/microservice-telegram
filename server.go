@@ -1,7 +1,7 @@
 package main
 
 import (
-	route "github.com/heaptracetechnology/microservice-telegram/route"
+	route "github.com/oms-services/telegram/route"
 	"log"
 	"net/http"
 )

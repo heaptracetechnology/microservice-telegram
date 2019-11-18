@@ -1,31 +1,27 @@
-omg: 1
+oms: 1
 lifecycle:
   startup:
-    command: ["microservice-telegram"]
+    command: ['telegram']
 info:
   version: 1.0.0
   title: Telegram
   description: This is a telegram service
-  contact:
-    name: Rohit Shetty
-    url: https://github.com/ht68rohit
-    email: rohits@heaptrace.com
   license:
     name: MIT
-    url: https://opensource.org/licenses/MIT 
+    url: https://opensource.org/licenses/MIT
 actions:
   bot:
     help: Start a Telegram bot
     events:
       hears:
         help: Triggered anytime when any new message is posted in channel
-        arguments: 
+        arguments:
           channel:
             type: string
             in: requestBody
             required: true
             help: The channel to subscribe
-        http: 
+        http:
           port: 3000
           subscribe:
             method: post
@@ -35,7 +31,7 @@ actions:
             path: /unsubscribe
             method: post
             contentType: application/json
-        output: 
+        output:
           contentType: application/json
           type: object
           properties:
@@ -220,7 +216,7 @@ actions:
       contentType: application/json
       properties:
         message_id:
-          help: It return integer message Id. 
+          help: It return integer message Id.
           type: int
         from:
           help: The object of User.
@@ -235,4 +231,4 @@ environment:
   BOT_TOKEN:
     type: string
     required: true
-    help: Access token key for app  
+    help: Access token key for app
