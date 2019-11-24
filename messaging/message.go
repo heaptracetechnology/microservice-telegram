@@ -5,15 +5,16 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/cloudevents/sdk-go"
-	result "github.com/oms-services/telegram/result"
-	tgbotapi "gopkg.in/telegram-bot-api.v4"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"time"
+
+	cloudevents "github.com/cloudevents/sdk-go"
+	result "github.com/oms-services/telegram/result"
+	tgbotapi "gopkg.in/telegram-bot-api.v4"
 )
 
 type BotMessage struct {
