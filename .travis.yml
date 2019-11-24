@@ -1,14 +1,13 @@
 language: go
 sudo: false
 go:
-  - 1.11.x
-  
-
+- 1.11.x
 before_install:
-  - go get -t -v ./...
-
+- go get -t -v ./...
 script:
-  - ./go.test.sh
-
+- "./go.test.sh"
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.io/bash)
+env:
+  global:
+    secure: ukiOuFxysckk7pHQlxDT/l5XuAO56jGx9oGTBVX9BRhnge0DSHBI/ZpP4ob2k2Jt+TgRiscpPyy8eUMy+H1QKFToZqVn8alSzY4G6Y5Krbnbf3IecuBwxoSL/jgMqeTNXh5Fdhgawl63VOYmhf4f3o/A4iAX9BbkCKXL5s+hFOqOs+g9/rZkwtZ61jaiMDOBfA3sYmGvqa3PwD9JhW1Bt7Sh2xB/cghnpk1WvOhySthfu00bTgbuiLCUiZOa0voAQpBwIESwwAAikfG6YKxcg45wF+8V5+1dgzLnAPkuyatUjTheS5UiZdc7j8ySbvYMn3/2DYX9cZjcn1oDBhvie+8k1PvUcjXHtZ5Yngx03YmUft8PYnEVzJWdDb2ZsaIY6vT4oMQr93qCXf+lESQWBzu93XxFAucg1tVTzNbns9e237yqbeenMbZ0sHZiiEatdlHYCSJ/PQCZ/8iRLAWEstmuhcQtsgK1Hrw6KysTL5O72hGfLEejGnHBBodvgAGfpsiUUoLi0CK8+uUQFHNM02/Xb/75HkJuocPEx0YP1iQDDl1DpTxsyE89mUnoLEvCVP6yqwoD+xuorK32OL7vbSll/gwpSYvayjxaLPRw1DV9AlIvSKBHElvp0zUMEPIz+Y8Ec6V5IZHao//8crJgrtZO58pPMZqFpoT5u9TSKr4=
