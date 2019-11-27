@@ -1,14 +1,19 @@
 oms: 1
-lifecycle:
-  startup:
-    command: ['telegram']
 info:
   version: 1.0.0
   title: Telegram
   description: This is a telegram service
   license:
     name: MIT
-    url: https://opensource.org/licenses/MIT
+    url: 'https://opensource.org/licenses/MIT'
+  contact:
+    name: Open Microservices
+    url: 'https://openmicroservices.org'
+    email: core@openmicroservices.org
+lifecycle:
+  startup:
+    command:
+      - telegram
 actions:
   bot:
     help: Start a Telegram bot
@@ -39,7 +44,7 @@ actions:
               help: The update ID of new message
               type: string
             channel_post:
-              help: The object of channel post with message ID, channel name etc.
+              help: 'The object of channel post with message ID, channel name etc.'
               type: map
             text:
               help: The text message from channel
@@ -130,7 +135,7 @@ actions:
           help: The message ID
           type: int
         chat:
-          help: The chat object with details(ID, type, title,username)
+          help: 'The chat object with details(ID, type, title,username)'
           type: map
         text:
           help: The text message
